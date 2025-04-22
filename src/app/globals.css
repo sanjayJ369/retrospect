@@ -44,72 +44,119 @@
 }
 
 :root {
+  /* ─── BORDER RADIUS ───────────────────────────────────────────────────────── */
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* ─── CORE BACKGROUND & TEXT ──────────────────────────────────────────────── */
+  --background: #fdf6e3; /* Warm ivory */
+  --foreground: #2d1e2f; /* Deep plum for legibility */
+
+  /* ─── SURFACE PALETTES ────────────────────────────────────────────────────── */
+  --card: #fcf5ed; /* Dusty cream */
+  --card-foreground: #2d1e2f; /* Maintain contrast */
+
+  --popover: #fff8f2; /* Ultra‑light cream */
+  --popover-foreground: #2d1e2f;
+
+  /* ─── PRIMARY & SECONDARY ACTIONS ────────────────────────────────────────── */
+  --primary: #d98a78; /* Soft rust */
+  --primary-foreground: #fdf6e3; /* Ivory text */
+
+  --secondary: #b8c9a5; /* Gentle sage/teal */
+  --secondary-foreground: #2d1e2f; /* Plum text */
+
+  /* ─── STATES: MUTED & ACCENT ─────────────────────────────────────────────── */
+  --muted: #fef9ef; /* Faint ivory */
+  --muted-foreground: rgba(45, 30, 47, 0.5);
+
+  /* ← replaced dusty‑rose accent with pale chartreuse → */
+  --accent: #e9edc9; /* Pale chartreuse */
+  --accent-foreground: #2d1e2f; /* Plum text */
+
+  /* ─── DESTRUCTIVE (ERROR) ────────────────────────────────────────────────── */
+  --destructive: #a63d40; /* Deep rust */
+  --destructive-foreground: #fdf6e3;
+
+  /* ─── BORDERS, INPUTS, FOCUS RINGS ──────────────────────────────────────── */
+  --border: rgba(45, 30, 47, 0.15);
+  --input: #fff8f2;
+  --ring: #d98a78; /* Rust ring for focus */
+
+  /* ─── CHART COLORS (HARMONIOUS VARIATIONS) ─────────────────────────────── */
+  --chart-1: #d98a78; /* Rust */
+  --chart-2: #b8c9a5; /* Sage/teal */
+  --chart-3: #fdf6e3; /* Ivory */
+  --chart-4: #e9edc9; /* Pale chartreuse */
+  --chart-5: #a63d40; /* Deep rust */
+
+  /* ─── SIDEBAR (LIGHT SURFACE WITH ACCENTS) ──────────────────────────────── */
+  --sidebar: #fcf5ed;
+  --sidebar-foreground: #2d1e2f;
+
+  --sidebar-primary: #d98a78;
+  --sidebar-primary-foreground: #fdf6e3;
+
+  --sidebar-accent: #e9edc9;
+  --sidebar-accent-foreground: #2d1e2f;
+
+  --sidebar-border: rgba(45, 30, 47, 0.2);
+  --sidebar-ring: #b8c9a5;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* ─── CORE ───────────────────────────────────────────────────────────────── */
+  --background: #2d1e2f; /* Deep plum */
+  --foreground: #f3e5ab; /* Pale cream */
+
+  /* ─── SURFACES ───────────────────────────────────────────────────────────── */
+  --card: #3d2c3f; /* Dark aubergine */
+  --card-foreground: #f3e5ab; /* Cream text */
+
+  --popover: #4f3a3f; /* Muted burgundy */
+  --popover-foreground: #f3e5ab; /* Cream text */
+
+  /* ─── PRIMARY & SECONDARY ACTIONS ────────────────────────────────────────── */
+  --primary: #a63d40; /* Rust‑red */
+  --primary-foreground: #f3e5ab; /* Cream text */
+
+  --secondary: #d4a373; /* Warm mustard */
+  --secondary-foreground: #2d1e2f; /* Plum text */
+
+  /* ─── STATES: MUTED & ACCENT ─────────────────────────────────────────────── */
+  --muted: #5a443f; /* Deep taupe */
+  --muted-foreground: rgba(243, 229, 171, 0.6);
+
+  --accent: #4f6d7a; /* Muted teal */
+  --accent-foreground: #f3e5ab; /* Cream text */
+
+  /* ─── DESTRUCTIVE (ERROR) ────────────────────────────────────────────────── */
+  --destructive: #8b0000; /* Dark crimson */
+  --destructive-foreground: #f3e5ab;
+
+  /* ─── BORDERS, INPUTS & RINGS ────────────────────────────────────────────── */
+  --border: rgba(243, 229, 171, 0.2);
+  --input: #402f32; /* Slightly lighter plum */
+  --ring: #d4a373; /* Mustard focus ring */
+
+  /* ─── CHART COLORS (HARMONIOUS SET) ─────────────────────────────────────── */
+  --chart-1: #a63d40; /* Rust‑red */
+  --chart-2: #d4a373; /* Mustard */
+  --chart-3: #f3e5ab; /* Cream */
+  --chart-4: #4f6d7a; /* Teal */
+  --chart-5: #5a443f; /* Taupe */
+
+  /* ─── SIDEBAR (INVERTED SURFACE) ───────────────────────────────────────── */
+  --sidebar: #2d1e2f; /* Same deep plum */
+  --sidebar-foreground: #f3e5ab;
+
+  --sidebar-primary: #a63d40;
+  --sidebar-primary-foreground: #f3e5ab;
+
+  --sidebar-accent: #d4a373;
+  --sidebar-accent-foreground: #2d1e2f;
+
+  --sidebar-border: rgba(243, 229, 171, 0.3);
+  --sidebar-ring: #d4a373;
 }
 
 @layer base {
