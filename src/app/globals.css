@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@layer base {
+  svg.lucide {
+    @apply [image-rendering:pixelated] [shape-rendering:crispEdges];
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
