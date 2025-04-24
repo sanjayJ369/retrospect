@@ -14,7 +14,7 @@ import {
   ZapIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/8bit/button";
-import Link from "next/link";
+import { NavButton } from "@/components/ui/8bit/nav-button";
 
 interface Route {
   key: string;
@@ -53,7 +53,7 @@ const HomeSidebar = () => {
 
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button variant="outline" size="icon">
           <MenuIcon />
         </Button>
@@ -63,14 +63,15 @@ const HomeSidebar = () => {
           <SheetTitle className="text-xl">Navigation</SheetTitle>
           <Separator />
           {routes.map((route) => (
-            <Link key={route.key} href={route.href} legacyBehavior>
-              <Button className="m-2">
-                <SheetTitle className="w-full flex justify-between items-center">
-                  <route.Icon />
-                  {route.title}
-                </SheetTitle>
-              </Button>
-            </Link>
+            <NavButton
+              className="flex m-3 justify-between"
+              key={route.key}
+              variant="outline"
+              href={route.href}
+            >
+              <route.Icon />
+              {route.title}
+            </NavButton>
           ))}
         </SheetHeader>
       </SheetContent>

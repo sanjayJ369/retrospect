@@ -1,82 +1,72 @@
 "use client";
 import { Press_Start_2P } from "next/font/google";
-import { cva, VariantProps } from "class-variance-authority";
+import { VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { Button as ShadcnButton } from "@/components/ui/button";
 import React from "react";
+import { useRouter } from "next/navigation";
+import { buttonVariants } from "./button";
 
 const pressStart = Press_Start_2P({
   weight: ["400"],
   subsets: ["latin"],
 });
 
-export const buttonVariants = cva("", {
-  variants: {
-    font: {
-      normal: "",
-      retro: pressStart.className,
-    },
-    variant: {
-      default: "bg-foreground",
-      destructive: "bg-foreground",
-      outline: "bg-foreground",
-      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-      ghost: "hover:bg-accent hover:text-accent-foreground",
-      link: "text-primary underline-offset-4 hover:underline",
-    },
-    size: {
-      default: "h-9 px-4 py-2 has-[>svg]:px-3",
-      sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-      lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-      icon: "size-9",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-    size: "default",
-  },
-});
-
-export interface BitButtonProps
+export interface BitNavButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  href?: string;
+  href: string;
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
-function Button({
-  children,
-  className,
-  variant,
-  size,
-  onClick: parentOnClick,
-  ...restProps
-}: BitButtonProps) {
-  const { font } = restProps;
+function NavButton({ href, children, ...props }: BitNavButtonProps) {
+  const { variant, size, className, font } = props;
+  const router = useRouter();
   const clickSound = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
     clickSound.current = new Audio("/click.mp3");
   }, []);
 
-  const handleClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ): Promise<void> => {
-    if (clickSound.current) {
-      clickSound.current.currentTime = 0;
-      clickSound.current.volume = 0.15;
-      await clickSound.current.play();
-      if (parentOnClick) {
-        parentOnClick(e);
-      }
+  const handleClick = async () => {
+    if (!clickSound.current) {
+      router.push(href);
+      return;
     }
+
+    clickSound.current.currentTime = 0;
+    clickSound.current.volume = 0.15;
+
+    try {
+      const playPromise = clickSound.current.play();
+
+      if (playPromise !== undefined) {
+        await playPromise;
+
+        // Wait until the sound finishes playing
+        await new Promise<void>((resolve) => {
+          clickSound.current?.addEventListener(
+            "ended",
+            () => {
+              resolve();
+            },
+            { once: true },
+          );
+        });
+      }
+    } catch (err) {
+      console.warn("Failed to play click sound:", err);
+    }
+
+    router.push(href);
   };
 
   return (
     <ShadcnButton
       onClick={handleClick}
-      {...restProps}
+      {...props}
       className={cn(
         "rounded-none active:translate-y-1 transition-transform relative",
         font !== "normal" && pressStart.className,
@@ -164,4 +154,4 @@ function Button({
   );
 }
 
-export { Button };
+export { NavButton };

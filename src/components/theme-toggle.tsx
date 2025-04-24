@@ -14,6 +14,22 @@ import {
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
+  const switchSound = React.useRef<HTMLAudioElement | null>(null);
+
+  React.useEffect(() => {
+    switchSound.current = new Audio("/light-switch.mp3");
+  }, []);
+
+  const handleThemeChange = (theme: string) => {
+    if (switchSound.current) {
+      switchSound.current.currentTime = 0;
+      switchSound.current.volume = 0.15;
+      switchSound.current.play().catch((err) => {
+        console.warn("Audio failed to play:", err);
+      });
+    }
+    setTheme(theme);
+  };
 
   return (
     <DropdownMenu>
@@ -31,13 +47,13 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("light")}>
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("system")}>
           System
         </DropdownMenuItem>
       </DropdownMenuContent>
