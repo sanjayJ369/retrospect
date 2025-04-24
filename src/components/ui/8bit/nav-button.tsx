@@ -7,6 +7,7 @@ import { Button as ShadcnButton } from "@/components/ui/button";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { buttonVariants } from "./button";
+import { useSound } from "@/hooks/useSound";
 
 const pressStart = Press_Start_2P({
   weight: ["400"],
@@ -24,42 +25,10 @@ export interface BitNavButtonProps
 function NavButton({ href, children, ...props }: BitNavButtonProps) {
   const { variant, size, className, font } = props;
   const router = useRouter();
-  const clickSound = React.useRef<HTMLAudioElement | null>(null);
-
-  React.useEffect(() => {
-    clickSound.current = new Audio("/click.mp3");
-  }, []);
+  const { play } = useSound("/click.mp3");
 
   const handleClick = async () => {
-    if (!clickSound.current) {
-      router.push(href);
-      return;
-    }
-
-    clickSound.current.currentTime = 0;
-    clickSound.current.volume = 0.15;
-
-    try {
-      const playPromise = clickSound.current.play();
-
-      if (playPromise !== undefined) {
-        await playPromise;
-
-        // Wait until the sound finishes playing
-        await new Promise<void>((resolve) => {
-          clickSound.current?.addEventListener(
-            "ended",
-            () => {
-              resolve();
-            },
-            { once: true },
-          );
-        });
-      }
-    } catch (err) {
-      console.warn("Failed to play click sound:", err);
-    }
-
+    await play();
     router.push(href);
   };
 

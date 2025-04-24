@@ -5,6 +5,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Button as ShadcnButton } from "@/components/ui/button";
 import React from "react";
+import { useSound } from "@/hooks/useSound";
 
 const pressStart = Press_Start_2P({
   weight: ["400"],
@@ -54,22 +55,13 @@ function Button({
   ...restProps
 }: BitButtonProps) {
   const { font } = restProps;
-  const clickSound = React.useRef<HTMLAudioElement | null>(null);
 
-  React.useEffect(() => {
-    clickSound.current = new Audio("/click.mp3");
-  }, []);
+  const { play } = useSound("/click.mp3");
 
-  const handleClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ): Promise<void> => {
-    if (clickSound.current) {
-      clickSound.current.currentTime = 0;
-      clickSound.current.volume = 0.15;
-      await clickSound.current.play();
-      if (parentOnClick) {
-        parentOnClick(e);
-      }
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    await play();
+    if (parentOnClick) {
+      parentOnClick(e);
     }
   };
 

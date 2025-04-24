@@ -2,6 +2,7 @@ import { ModeToggle } from "@/components/theme-toggle";
 import Container from "@/components/ui/8bit/container";
 import HomeSidebar from "./home-sidebar";
 import Link from "next/link";
+import { SoundToggle } from "@/components/sound-toggle";
 
 const HomeNavbar = () => {
   return (
@@ -14,7 +15,10 @@ const HomeNavbar = () => {
         >
           RETROSPECT
         </Link>
-        <ModeToggle />
+        <div className="flex gap-4">
+          <ModeToggle />
+          <SoundToggle />
+        </div>
       </Container>
     </div>
   );

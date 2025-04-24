@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/8bit/dropdown-menu";
+import { useSound } from "@/hooks/useSound";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
@@ -19,15 +20,9 @@ export function ModeToggle() {
   React.useEffect(() => {
     switchSound.current = new Audio("/light-switch.mp3");
   }, []);
-
-  const handleThemeChange = (theme: string) => {
-    if (switchSound.current) {
-      switchSound.current.currentTime = 0;
-      switchSound.current.volume = 0.15;
-      switchSound.current.play().catch((err) => {
-        console.warn("Audio failed to play:", err);
-      });
-    }
+  const { play } = useSound("/light-switch.mp3");
+  const handleThemeChange = async (theme: string) => {
+    await play();
     setTheme(theme);
   };
 
