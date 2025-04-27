@@ -3,11 +3,17 @@ import { cn } from "@/lib/utils";
 interface ContainerProps {
   className?: string;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
-const Container = ({ className, children }: ContainerProps) => {
+const Container = ({
+  className,
+  children,
+  style,
+  ...props
+}: ContainerProps) => {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} {...props} style={style}>
       {children}
       <div
         className="absolute top-0 left-0 w-full h-1.5 bg-foreground dark:bg-ring
