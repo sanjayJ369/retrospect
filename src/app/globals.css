@@ -10,6 +10,7 @@
 }
 
 @theme inline {
+  --color-screen: #a4b465;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -107,6 +108,8 @@
 
   --sidebar-border: rgba(45, 30, 47, 0.2);
   --sidebar-ring: #b8c9a5;
+
+  --color-screen: #a4b465;
 }
 
 .dark {
@@ -163,6 +166,8 @@
 
   --sidebar-border: rgba(243, 229, 171, 0.3);
   --sidebar-ring: #d4a373;
+
+  --color-screen: #626f47;
 }
 
 @layer base {

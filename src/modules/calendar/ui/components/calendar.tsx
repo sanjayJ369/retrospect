@@ -49,7 +49,7 @@ const Calendar = () => {
   const months = Array.from({ length: 12 }, (_, i) => i);
 
   return (
-    <Container className="flex flex-col p-3 m-3 justify-center items-center">
+    <Container className="flex flex-col p-3 justify-center items-center">
       <div className="flex flex-col w-full gap-3 justify-center items-center">
         <CalendarYear setYear={setYear} year={year} />
         <CalendarMonth

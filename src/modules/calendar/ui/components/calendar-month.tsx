@@ -45,7 +45,7 @@ const CalendarMonth = ({ setMonth, month }: CalendarMonthProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="w-1/3">
         <Button variant="outline">{monthNames.get(month)}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="text-xs w-56 rounded-none overflow-clip">
