@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/8bit/input";
 import { Label } from "@/components/ui/8bit/label";
 import { Textarea } from "@/components/ui/8bit/textarea";
 import { useTaskQuery } from "@/hooks/api/tasks/useTaskQuery";
-import { SetStateAction } from "react";
+import { SetStateAction, useEffect } from "react";
 
 interface TaskEditProps {
   open: boolean;
@@ -23,32 +23,39 @@ interface TaskEditProps {
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { taskSchema, TaskFormData } from "@/schemas/task-schema";
+import useEditTaskMutation from "@/hooks/api/tasks/useEditTaskMutation";
 
 const TaskEdit = ({ open, setOpen, taskId }: TaskEditProps) => {
   const { data: task, isLoading, isError } = useTaskQuery(taskId);
+  const { mutate } = useEditTaskMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
-    defaultValues: task
-      ? {
-          title: task.title,
-          description: task.description,
-          duration: task.duration,
-        }
-      : {},
   });
 
-  const onSubmit: SubmitHandler<TaskFormData> = (data) => {
-    console.log("Submitted:", data);
-    setOpen(false);
-  };
+  useEffect(() => {
+    if (task) {
+      reset({
+        title: task.title,
+        description: task.description,
+        duration: task.duration,
+      });
+    }
+  }, [task, reset]);
 
   if (isError) return <Alert>Error loading task</Alert>;
   if (isLoading || !task) return <p>Loading…</p>;
+
+  const onSubmit: SubmitHandler<TaskFormData> = (data) => {
+    console.log("Submitted:", data);
+    mutate({ id: task.id, task: data });
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

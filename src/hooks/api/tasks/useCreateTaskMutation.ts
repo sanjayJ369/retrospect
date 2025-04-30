@@ -1,14 +1,16 @@
 import { getStorageProvider } from "@/lib/storage/StorageProvider";
+import { TaskFormData } from "@/schemas/task-schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-const useDeleteTaskMutation = () => {
+
+const useCreateTaskMutation = () => {
   const queryClient = useQueryClient();
   const storage = getStorageProvider();
   return useMutation({
-    mutationFn: (id: string) => storage.deleteTask(id),
+    mutationFn: (task: TaskFormData) => storage.createTask(task),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 };
 
-export default useDeleteTaskMutation;
+export default useCreateTaskMutation;

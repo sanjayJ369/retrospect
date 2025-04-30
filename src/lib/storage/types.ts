@@ -11,7 +11,7 @@ export interface StorageProvider {
   deleteTask(id: string): Promise<{ id: string; success: boolean }>;
   editTask(
     id: string,
-    newTask: Task,
+    newTask: TaskFormData,
   ): Promise<{ task: Task; success: boolean }>;
   createTask(task: TaskFormData): Promise<{ task: Task; success: boolean }>;
 
