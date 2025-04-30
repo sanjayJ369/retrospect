@@ -1,16 +1,21 @@
 import Calendar from "@/modules/calendar/ui/components/calendar";
 import DateDisplay from "@/modules/date/ui/components/date-display";
+import Tasks from "@/modules/tasks/ui/sections/tasks";
 
 const HomeView = () => {
   return (
-    <div>
-      <div className="flex p-3">
-        <span className="flex-2">
+    <div className="flex h-full p-3">
+      <div className="flex justify-between w-1/2 gap-2">
+        <div className="w-2/3">
           <Calendar />
-        </span>
-        <span className="flex-1">
+        </div>
+        <div className="w-1/3 flex items-start justify-center">
           <DateDisplay />
-        </span>
+        </div>
+      </div>
+
+      <div className="w-1/2">
+        <Tasks />
       </div>
     </div>
   );

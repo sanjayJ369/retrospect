@@ -1,5 +1,5 @@
-// src/lib/storage/stubStorageProvider.ts
 import type { StorageProvider } from "./types";
+import type { Task } from "@/types/tasks";
 import type {
   CalendarYear,
   CalendarMonth,
@@ -17,7 +17,7 @@ export const StubStorageProvider: StorageProvider = {
       for (let day = 1; day <= daysInMonth; day++) {
         days.push({
           day,
-          score: getRandomScore(), // random score for each day
+          score: getRandomScore(),
         });
       }
 
@@ -25,6 +25,27 @@ export const StubStorageProvider: StorageProvider = {
     }
 
     return { year, months };
+  },
+
+  async getTask(id: string): Promise<Task | null> {
+    if (Math.random() < 0.1) {
+      return null;
+    }
+
+    return {
+      id,
+      done: Math.random() < 0.5,
+      title: `Task Title for ${id}`,
+      description: `This is a placeholder description for task with id ${id}.`,
+      duration: Math.floor(Math.random() * 24 * 60),
+    };
+  },
+
+  async deleteTask(id: string): Promise<{ id: string }> {
+    return new Promise<{ id: string }>((resolve) => {
+      console.log("deleted task :", id);
+      resolve({ id });
+    });
   },
 };
 

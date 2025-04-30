@@ -11,23 +11,17 @@ import Container from "@/components/ui/8bit/container";
 import { useEffect, useState } from "react";
 import CalendarYear from "./calendar-year";
 import CalendarMonth from "./calendar-month";
-import { getStorageProvider } from "@/lib/storage/StorageProvider";
 import CalendarMonthCard from "./calendar-month-card";
-import { usePromiseQuery } from "@/hooks/usePromisQuery";
+import { useCalendarYearQuery } from "@/hooks/api/calendar/useCalendarYearQuery";
 
 const Calendar = () => {
   const today = new Date();
-  const storage = getStorageProvider();
 
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
-  const {
-    data: yearData,
-    isLoading,
-    isError,
-  } = usePromiseQuery(() => storage.getCalendarYear(year), [year]);
+  const { data: yearData, isLoading, isError } = useCalendarYearQuery(year);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -62,7 +56,7 @@ const Calendar = () => {
         />
       </div>
 
-      <div className="w-11/12">
+      <div className="w-9/12">
         <Carousel
           opts={{
             startIndex: today.getMonth(),
