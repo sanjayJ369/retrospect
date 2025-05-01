@@ -21,10 +21,12 @@ const CalendarYear = ({ setYear, year }: CalendarYearProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="w-1/3">
-        <Button variant="outline">{year}</Button>
+      <DropdownMenuTrigger asChild className="w-full sm:w-36 md:w-44">
+        <Button variant="outline" className="text-xs sm:text-sm md:text-base">
+          {year}
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="text-xs w-56 rounded-none overflow-clip">
+      <DropdownMenuContent className="text-xs w-32 sm:w-44 md:w-56 rounded-none overflow-clip max-h-60 overflow-y-auto">
         {years.map((y) => (
           <DropdownMenuItem key={y} onSelect={() => setYear(y)}>
             {y}

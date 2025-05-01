@@ -45,10 +45,12 @@ const CalendarMonth = ({ setMonth, month }: CalendarMonthProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className="w-1/3">
-        <Button variant="outline">{monthNames.get(month)}</Button>
+      <DropdownMenuTrigger asChild className="w-full sm:w-36 md:w-44">
+        <Button variant="outline" className="text-xs sm:text-sm md:text-base">
+          {monthNames.get(month)}
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="text-xs w-56 rounded-none overflow-clip">
+      <DropdownMenuContent className="text-xs w-32 sm:w-44 md:w-56 rounded-none overflow-clip">
         {Array.from(monthNames.entries()).map(([k, v]) => (
           <DropdownMenuItem key={k} onSelect={() => setMonth(k)}>
             {v}

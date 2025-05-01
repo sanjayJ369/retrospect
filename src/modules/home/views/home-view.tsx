@@ -4,17 +4,28 @@ import Tasks from "@/modules/tasks/ui/sections/tasks";
 
 const HomeView = () => {
   return (
-    <div className="flex h-full p-3">
-      <div className="flex justify-between w-1/2 gap-2">
-        <div className="w-2/3">
-          <Calendar />
+    <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 p-3 h-[calc(100vh-3.5rem)]">
+      <div className="flex flex-col gap-2 h-full overflow-hidden">
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-2 h-1/2 md:h-full lg:h-1/2">
+          <div className="md:col-span-3 lg:col-span-2 h-full overflow-auto px-3">
+            <Calendar />
+          </div>
+          <div className="hidden lg:flex h-full items-start justify-center">
+            <DateDisplay />
+          </div>
+
+          {/* Date display for mobile/tablet - shown between calendar and challenges */}
+          <div className="flex lg:hidden h-36 md:h-48 items-center justify-center my-2">
+            <DateDisplay />
+          </div>
         </div>
-        <div className="w-1/3 flex items-start justify-center">
-          <DateDisplay />
+
+        <div className="overflow-auto h-1/2 md:h-full lg:h-1/2">
+          <p>challenges</p>
         </div>
       </div>
 
-      <div className="w-1/2">
+      <div className="h-full overflow-auto mt-4 lg:mt-0">
         <Tasks />
       </div>
     </div>

@@ -6,9 +6,9 @@ interface HomeLayoutProps {
 
 const HomeLayout = ({ children }: HomeLayoutProps) => {
   return (
-    <div className="w-full">
-      <HomeNavbar></HomeNavbar>
-      <main>{children}</main>
+    <div className="w-full h-screen flex flex-col overflow-hidden">
+      <HomeNavbar />
+      <main className="flex-1 overflow-hidden">{children}</main>
     </div>
   );
 };
