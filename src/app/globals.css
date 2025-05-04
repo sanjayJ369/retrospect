@@ -114,60 +114,60 @@
 
 .dark {
   /* ─── CORE ───────────────────────────────────────────────────────────────── */
-  --background: #2d1e2f; /* Deep plum */
-  --foreground: #f3e5ab; /* Pale cream */
+  --background: #181414;
+  --foreground: #eeeeee;
 
   /* ─── SURFACES ───────────────────────────────────────────────────────────── */
-  --card: #3d2c3f; /* Dark aubergine */
-  --card-foreground: #f3e5ab; /* Cream text */
+  --card: #222222;
+  --card-foreground: #eeeeee;
 
-  --popover: #4f3a3f; /* Muted burgundy */
-  --popover-foreground: #f3e5ab; /* Cream text */
+  --popover: #333333;
+  --popover-foreground: #eeeeee;
 
   /* ─── PRIMARY & SECONDARY ACTIONS ────────────────────────────────────────── */
-  --primary: #a63d40; /* Rust‑red */
-  --primary-foreground: #f3e5ab; /* Cream text */
+  --primary: #36b2ff;
+  --primary-foreground: #ffffff;
 
-  --secondary: #d4a373; /* Warm mustard */
-  --secondary-foreground: #2d1e2f; /* Plum text */
+  --secondary: #eeeeee; /* Light Gray */
+  --secondary-foreground: #000000;
 
   /* ─── STATES: MUTED & ACCENT ─────────────────────────────────────────────── */
-  --muted: #5a443f; /* Deep taupe */
-  --muted-foreground: rgba(243, 229, 171, 0.6);
+  --muted: #555555;
+  --muted-foreground: #aaaaaa;
 
-  --accent: #4f6d7a; /* Muted teal */
-  --accent-foreground: #f3e5ab; /* Cream text */
+  --accent: #808000; /* Olive (Darker, Muted) */
+  --accent-foreground: #ffffff;
 
   /* ─── DESTRUCTIVE (ERROR) ────────────────────────────────────────────────── */
-  --destructive: #8b0000; /* Dark crimson */
-  --destructive-foreground: #f3e5ab;
+  --destructive: #d20f39;
+  --destructive-foreground: #ffffff;
 
   /* ─── BORDERS, INPUTS & RINGS ────────────────────────────────────────────── */
-  --border: rgba(243, 229, 171, 0.2);
-  --input: #402f32; /* Slightly lighter plum */
-  --ring: #d4a373; /* Mustard focus ring */
+  --border: #808000; /* Olive (Used as Border) */
+  --input: #333333;
+  --ring: #808000; /* Olive (Focus Ring) */
 
-  /* ─── CHART COLORS (HARMONIOUS SET) ─────────────────────────────────────── */
-  --chart-1: #a63d40; /* Rust‑red */
-  --chart-2: #d4a373; /* Mustard */
-  --chart-3: #f3e5ab; /* Cream */
-  --chart-4: #4f6d7a; /* Teal */
-  --chart-5: #5a443f; /* Taupe */
+  /* ─── CHART COLORS (RETRO INSPIRED) ─────────────────────────────────────── */
+  --chart-1: #ff4136;
+  --chart-2: #eeeeee;
+  --chart-3: #aaaaaa;
+  --chart-4: #0074d9;
+  --chart-5: #555555;
 
   /* ─── SIDEBAR (INVERTED SURFACE) ───────────────────────────────────────── */
-  --sidebar: #2d1e2f; /* Same deep plum */
-  --sidebar-foreground: #f3e5ab;
+  --sidebar: #222222;
+  --sidebar-foreground: #eeeeee;
 
-  --sidebar-primary: #a63d40;
-  --sidebar-primary-foreground: #f3e5ab;
+  --sidebar-primary: #36ffa1;
+  --sidebar-primary-foreground: #ffffff;
 
-  --sidebar-accent: #d4a373;
-  --sidebar-accent-foreground: #2d1e2f;
+  --sidebar-accent: #808000; /* Olive */
+  --sidebar-accent-foreground: #ffffff;
 
-  --sidebar-border: rgba(243, 229, 171, 0.3);
-  --sidebar-ring: #d4a373;
+  --sidebar-border: #808000; /* Olive */
+  --sidebar-ring: #808000; /* Olive */
 
-  --color-screen: #626f47;
+  --color-screen: #38b764; /* Classic Green */
 }
 
 @layer base {

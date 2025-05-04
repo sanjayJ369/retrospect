@@ -11,12 +11,84 @@ import { Challenge, ChallengeEntry } from "@/types/challenges";
 import { dateRange } from "../utils";
 
 const tasks: Task[] = [];
-const challenges: Challenge[] = [];
+let challenges: Challenge[] = [];
 const completetions: Map<string, Map<Date, ChallengeEntry>> = new Map();
 
-function genId() {
-  return `task-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+function genId(prefix = "task") {
+  return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
+
+// stub challenges data
+const today = new Date();
+const lastWeek = new Date();
+lastWeek.setDate(today.getDate() - 7);
+const twoWeeksFromNow = new Date();
+twoWeeksFromNow.setDate(today.getDate() + 14);
+const oneMonthFromNow = new Date();
+oneMonthFromNow.setMonth(today.getMonth() + 1);
+
+// Initial challenges
+const initialChallenges: Challenge[] = [
+  {
+    id: "challenge-1",
+    title: "Morning Meditation",
+    description: "Meditate for 10 minutes every morning",
+    startDate: lastWeek,
+    endDate: oneMonthFromNow,
+    duration: getDuration(lastWeek, oneMonthFromNow),
+  },
+  {
+    id: "challenge-2",
+    title: "Daily Exercise",
+    description: "Complete 30 minutes of physical activity",
+    startDate: today,
+    endDate: twoWeeksFromNow,
+    duration: getDuration(today, twoWeeksFromNow),
+  },
+  {
+    id: "challenge-3",
+    title: "Reading Habit",
+    description: "Read 20 pages of a book each day",
+    startDate: lastWeek,
+    endDate: oneMonthFromNow,
+    duration: getDuration(lastWeek, oneMonthFromNow),
+  },
+  {
+    id: "challenge-4",
+    title: "Water Intake",
+    description: "Drink 8 glasses of water daily",
+    startDate: today,
+    endDate: oneMonthFromNow,
+    duration: getDuration(today, oneMonthFromNow),
+  },
+];
+challenges = [...initialChallenges];
+// Initialize completions for each challenge
+initialChallenges.forEach((challenge) => {
+  const entries = dateRange(challenge.startDate, challenge.endDate);
+  completetions.set(challenge.id, new Map());
+
+  // Set random completion status for past dates
+  entries.forEach((date) => {
+    if (date <= today) {
+      const isCompleted = Math.random() > 0.3; // 70% chance of completion
+      completetions.get(challenge.id)?.set(date, {
+        id: genId("entry"),
+        challengeId: challenge.id,
+        date: date,
+        completed: isCompleted,
+      });
+    } else {
+      // Future dates are not completed
+      completetions.get(challenge.id)?.set(date, {
+        id: genId("entry"),
+        challengeId: challenge.id,
+        date: date,
+        completed: false,
+      });
+    }
+  });
+});
 
 export const StubStorageProvider: StorageProvider = {
   async getCalendarYear(year: number): Promise<CalendarYear | null> {
@@ -74,6 +146,7 @@ export const StubStorageProvider: StorageProvider = {
   },
 
   // Challenges implementation
+
   async getAllChallenges(): Promise<Challenge[]> {
     return [...challenges];
   },
@@ -108,7 +181,7 @@ export const StubStorageProvider: StorageProvider = {
       description: challengeData.description || "",
       startDate: challengeData.startDate,
       endDate: challengeData.endDate,
-      duration: challengeData.duration,
+      duration: getDuration(challengeData.startDate, challengeData.endDate),
     };
 
     challenges.push(newChallenge);
@@ -148,4 +221,31 @@ export const StubStorageProvider: StorageProvider = {
     });
     return { success: true };
   },
+
+  async editChallenge(
+    challengeData: ChallengeFormData,
+  ): Promise<{ challenge: Challenge; success: boolean }> {
+    const idx = challenges.findIndex((c) => c.id === challengeData.id);
+    if (idx === -1) throw new Error("Challenge not found");
+
+    challenges[idx] = {
+      ...challenges[idx],
+      title: challengeData.title,
+      description: challengeData.description || "",
+      startDate: challengeData.startDate,
+      endDate: challengeData.endDate,
+      duration: getDuration(challengeData.startDate, challengeData.endDate),
+    };
+
+    return {
+      challenge: challenges[idx],
+      success: true,
+    };
+  },
 };
+
+function getDuration(start: Date, end: Date): number {
+  return (
+    Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  );
+}

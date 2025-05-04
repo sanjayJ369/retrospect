@@ -1,4 +1,5 @@
 import Calendar from "@/modules/calendar/ui/components/calendar";
+import ChallengesCard from "@/modules/challenges/ui/challenges-card";
 import DateDisplay from "@/modules/date/ui/components/date-display";
 import Tasks from "@/modules/tasks/ui/sections/tasks";
 
@@ -21,7 +22,7 @@ const HomeView = () => {
         </div>
 
         <div className="overflow-auto h-1/2 md:h-full lg:h-1/2">
-          <p>challenges</p>
+          <ChallengesCard />
         </div>
       </div>
 
