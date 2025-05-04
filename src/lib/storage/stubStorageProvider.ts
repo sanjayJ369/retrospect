@@ -6,8 +6,13 @@ import type {
   CalendarDay,
 } from "@/types/calendar";
 import type { TaskFormData } from "@/schemas/task-schema";
+import type { ChallengeFormData } from "@/schemas/challenge-schema";
+import { Challenge, ChallengeEntry } from "@/types/challenges";
+import { dateRange } from "../utils";
 
 const tasks: Task[] = [];
+const challenges: Challenge[] = [];
+const completetions: Map<string, Map<Date, ChallengeEntry>> = new Map();
 
 function genId() {
   return `task-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -66,5 +71,81 @@ export const StubStorageProvider: StorageProvider = {
     if (idx === -1) throw new Error("Task not found");
     tasks.splice(idx, 1);
     return { id, success: true };
+  },
+
+  // Challenges implementation
+  async getAllChallenges(): Promise<Challenge[]> {
+    return [...challenges];
+  },
+
+  async getChallenge(id: string): Promise<Challenge> {
+    const challenge = challenges.find((c) => c.id === id);
+    if (!challenge) throw new Error("Challenge not found");
+    return challenge;
+  },
+
+  async deleteChallenge(id: string): Promise<{ id: string; success: boolean }> {
+    const idx = challenges.findIndex((c) => c.id === id);
+    if (idx === -1) throw new Error("Challenge not found");
+    challenges.splice(idx, 1);
+    // Also clean up any completions for this challenge
+    completetions.delete(id);
+    return { id, success: true };
+  },
+
+  async getChallengeEntries(id: string): Promise<ChallengeEntry[]> {
+    const challengeEntries = completetions.get(id);
+    if (!challengeEntries) return [];
+    return Array.from(challengeEntries.values());
+  },
+
+  async createChallenge(
+    challengeData: ChallengeFormData,
+  ): Promise<{ challenge: Challenge; success: boolean }> {
+    const newChallenge: Challenge = {
+      id: genId(),
+      title: challengeData.title,
+      description: challengeData.description || "",
+      startDate: challengeData.startDate,
+      endDate: challengeData.endDate,
+      duration: challengeData.duration,
+    };
+
+    challenges.push(newChallenge);
+    const entries = dateRange(newChallenge.startDate, newChallenge.endDate);
+    completetions.set(newChallenge.id, new Map());
+    entries.forEach((entry) => {
+      completetions.get(newChallenge.id)?.set(entry, {
+        id: genId(),
+        challengeId: newChallenge.id,
+        date: entry,
+        completed: false,
+      });
+    });
+
+    return {
+      challenge: newChallenge,
+      success: true,
+    };
+  },
+
+  async markChallengeDone(id: string): Promise<{ success: boolean }> {
+    completetions.get(id)?.set(new Date(), {
+      id: genId(),
+      challengeId: id,
+      date: new Date(),
+      completed: true,
+    });
+    return { success: true };
+  },
+
+  async markChallengeNotDone(id: string): Promise<{ success: boolean }> {
+    completetions.get(id)?.set(new Date(), {
+      id: genId(),
+      challengeId: id,
+      date: new Date(),
+      completed: false,
+    });
+    return { success: true };
   },
 };
