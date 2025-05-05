@@ -67,9 +67,9 @@ const Calendar = () => {
             startIndex: today.getMonth(),
           }}
           setApi={(api) => setCarouselApi(api)}
-          className="h-full"
+          className="h-full flex justify-center"
         >
-          <CarouselContent className="h-full">
+          <CarouselContent className="h-full flex-0">
             {months.map((m) => (
               <CarouselItem key={m} className="h-full">
                 <div className="p-1 sm:p-2 md:p-3 h-full">

@@ -19,9 +19,8 @@ const CalendarMonthCard = ({ monthData, className }: CalendarMonthProps) => {
         {monthData.days.map((day) => (
           <Container
             key={day.day}
-            className={
-              "rounded p-1 sm:p-2 text-center text-xs sm:text-sm md:text-base"
-            }
+            className={`rounded p-1 sm:p-2 text-center text-xs sm:text-sm md:text-base flex
+            justify-center items-center`}
             style={{
               backgroundColor: `rgba(120, 255, 120, ${1 - day.score * 0.01})`,
             }}
