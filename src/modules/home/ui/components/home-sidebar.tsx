@@ -60,7 +60,9 @@ const HomeSidebar = () => {
       </SheetTrigger>
       <SheetContent side={"left"}>
         <SheetHeader>
-          <SheetTitle className="text-xl">Navigation</SheetTitle>
+          <SheetTitle className="text-sm sm:text-md md:text-xl">
+            Navigation
+          </SheetTitle>
           <Separator />
           {routes.map((route) => (
             <NavButton
