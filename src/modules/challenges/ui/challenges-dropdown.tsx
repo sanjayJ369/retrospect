@@ -22,11 +22,14 @@ const ChallengesDropDown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button disabled={noChallenges} className="">
+        <Button
+          disabled={noChallenges}
+          className="text-xs sm:text-sm md:text-md"
+        >
           {!noChallenges ? currChallenge?.title : "no active challenges"}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="text-xs w-56 rounded-none overflow-clip">
+      <DropdownMenuContent className="text-xs sm:text-sm md:text-md w-56 rounded-none overflow-clip">
         {challenges.map((challenge) => (
           <DropdownMenuItem
             key={challenge.id}

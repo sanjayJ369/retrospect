@@ -58,45 +58,50 @@ const ChallengesCard = () => {
   });
 
   return (
-    <Container className="px-3 py-1">
-      <div className="h-full overflow-hidden flex flex-col my-3">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 py-2">
-          <p className="font-bold text-sm sm:text-lg md:text-xl">Challenges.</p>
-          <div>
-            <ChallengesDropDown
-              challenges={challenges!}
-              currChallenge={challenge}
-              setCurrChallenge={handleSetChallenge}
-            />
-            <span className="px-4">
-              <ChallengesExpand challenge={challenge} />
-            </span>
+    <div className="w-full flex items-center justify-center my-4">
+      <Container className="w-4/5 p-1 flex flex-col items-center justify-center">
+        <div className="h-full overflow-hidden flex flex-col my-3">
+          <div
+            className="flex flex-col items-center justify-center sm:flex-row sm:justify-between
+              sm:items-center gap-2 py-2"
+          >
+            <p className="font-bold text-sm sm:text-lg md:text-xl">
+              Challenges.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <ChallengesDropDown
+                challenges={challenges!}
+                currChallenge={challenge}
+                setCurrChallenge={handleSetChallenge}
+              />
+              <span className="px-4">
+                <ChallengesExpand challenge={challenge} />
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="p-0 sm:p-2 flex-1 overflow-hidden">
-          <div className="w-full h-4/5 flex items-center justify-center">
+          <div className="w-full flex items-center justify-center">
             <Carousel
               opts={{
                 startIndex: today.getMonth(),
               }}
-              className="h-full w-10/12"
+              className="h-full w-full md:w-4/5"
             >
               <CarouselContent className="h-full">
                 {Array.from(daysInMonths.entries()).map(([month, entries]) => (
                   <CarouselItem key={month} className="h-full">
-                    <div className="p-1 sm:p-2 h-full overflow-auto">
+                    <div className="p-1 sm:p-2 md:p-3 h-full">
                       <ChallengeDaysCard days={entries} />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex" />
-              <CarouselNext className="hidden sm:flex" />
+              <CarouselPrevious className="hidden sm:block" />
+              <CarouselNext className="hidden sm:block" />
             </Carousel>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

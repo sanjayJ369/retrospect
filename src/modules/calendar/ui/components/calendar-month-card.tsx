@@ -11,22 +11,22 @@ interface CalendarMonthProps {
 
 const CalendarMonthCard = ({ monthData, className }: CalendarMonthProps) => {
   return (
-    <Card className={cn("w-full h-full", className)}>
-      <div
-        className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-1 sm:gap-2
-          md:gap-3 p-1 sm:p-2 md:p-3 h-full"
-      >
+    <Card className={cn("w-full h-full ", className)}>
+      <div className="grid grid-cols-7 gap-1 px-4">
         {monthData.days.map((day) => (
-          <Container
-            key={day.day}
-            className={`rounded p-1 sm:p-2 text-center text-xs sm:text-sm md:text-base flex
-            justify-center items-center`}
-            style={{
-              backgroundColor: `rgba(120, 255, 120, ${1 - day.score * 0.01})`,
-            }}
-          >
-            {day.day}
-          </Container>
+          <div key={day.day} className="flex items-center justify-center">
+            <Container
+              className="p-3 flex-0 w-4 h-4 sm:w-auto sm:h-auto"
+              style={{
+                backgroundColor: `rgba(120, 255, 120, ${1 - day.score * 0.01})`,
+              }}
+            >
+              <span className="hidden sm:block w-8 h-8 md:w-12 lg:w-18 text-center">
+                {day.day}
+              </span>
+              <div className="block sm:hidden w-1 h-1"></div>
+            </Container>
+          </div>
         ))}
       </div>
     </Card>
