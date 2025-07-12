@@ -12,8 +12,8 @@ const DateDisplay = () => {
 
   return (
     <Container
-      className="flex flex-col items-center justify-around p-1 sm:p-2 md:p-3 w-full max-w-xs
-        gap-1 sm:gap-2 h-full mx-3"
+      className="flex w-4/5 flex-col items-center justify-around p-3 sm:p-2 md:p-3 max-w-xs gap-1
+        sm:gap-2 h-full mx-3"
     >
       <div className={rowClasses}>
         {day.split("").map((digit, i) => (

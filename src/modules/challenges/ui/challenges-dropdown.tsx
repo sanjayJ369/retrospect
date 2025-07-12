@@ -34,6 +34,7 @@ const ChallengesDropDown = ({
           <DropdownMenuItem
             key={challenge.id}
             onSelect={() => setCurrChallenge(challenge.id)}
+            className="text-xs sm:text-sm md:text-md xl:text-xl"
           >
             {challenge.title}
           </DropdownMenuItem>

@@ -52,7 +52,11 @@ const CalendarMonth = ({ setMonth, month }: CalendarMonthProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="text-xs rounded-none overflow-clip">
         {Array.from(monthNames.entries()).map(([k, v]) => (
-          <DropdownMenuItem key={k} onSelect={() => setMonth(k)}>
+          <DropdownMenuItem
+            key={k}
+            onSelect={() => setMonth(k)}
+            className="text-xs sm:text-sm md:text-md xl:text-xl"
+          >
             {v}
           </DropdownMenuItem>
         ))}

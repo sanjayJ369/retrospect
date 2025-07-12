@@ -21,12 +21,12 @@ const TaskCard = ({ id, title, checked }: TaskCardProps) => {
   return (
     <Container
       className={cn(
-        "flex gap-3 items-center p-3 justify-between",
+        "flex gap-3 items-center p-3 justify-between flex-col sm:flex-row w-full",
         done ? "bg-screen" : "",
       )}
     >
       <Checkbox checked={done} onCheckedChange={handleCheck} />
-      <div className="w-8/10 flex-1">
+      <div className="w-8/10 flex-1 text-sx sm:text-sm md:text-md xl:text-xl">
         <TaskDialog title={title} id={id} />
       </div>
       <TaskMutate id={id} />

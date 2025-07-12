@@ -24,29 +24,29 @@ const Tasks = () => {
   }
 
   return (
-    <Card className="min-h-full flex flex-col shadow-none border-none mx-3">
-      <Container className="py-3">
-        <CardHeader className="flex justify-center">
-          <span className="w-full flex justify-between">
-            <CardTitle className="font-bold text-2xl">T A S K S</CardTitle>
-            <Separator orientation="vertical" />
+    <Container className="w-full flex flex-col shadow-none border-none my-4 items-center">
+      <CardHeader className="w-full">
+        <Container className="p-3">
+          <CardTitle
+            className="font-bold text-xs sm:text-md md:text-xl flex items-center justify-between gap-2
+              p-1"
+          >
+            <p>T A S K S </p>
             <TaskNew />
-          </span>
-        </CardHeader>
-      </Container>
+          </CardTitle>
+        </Container>
+      </CardHeader>
 
-      <Container />
-      <CardContent className="overflow-y-auto h-full flex-1">
+      <CardContent className="h-full w-full">
         <ScrollArea className="w-full min-h-full">
           {tasks?.map((task) => (
-            <div key={task.id} className="my-1 p-1">
+            <div key={task.id} className="my-1 p-1 w-full">
               <TaskCard id={task.id} title={task.title} checked={task.done} />
             </div>
           ))}
         </ScrollArea>
       </CardContent>
-      <Container />
-    </Card>
+    </Container>
   );
 };
 

@@ -19,7 +19,7 @@ const ChallengeDaysCard = ({ days }: ChallengeDaysCard) => {
                 backgroundColor: `rgba(120, 255, 120, ${day.completed ? 1 : 0})`,
               }}
             >
-              <span className="hidden sm:block w-8 h-8 md:w-12 lg:w-18 text-center">
+              <span className="hidden sm:block w-6 h-6 md:w-6 md:h-6 lg:w-8 text-center">
                 {day.date.getDate()}
               </span>
               <div className="block sm:hidden w-2 h-2"></div>

@@ -5,13 +5,31 @@ import Tasks from "@/modules/tasks/ui/sections/tasks";
 
 const HomeView = () => {
   return (
-    <div className="">
-      <Calendar />
+    <div className="p-4">
+      <div className="block lg:hidden">
+        <Calendar />
+        <ChallengesCard />
+        <div className="flex items-center justify-center">
+          <DateDisplay />
+        </div>
+        <div className="flex items-center justify-center">
+          <div className="w-4/5">
+            <Tasks />
+          </div>
+        </div>
+      </div>
 
-      {/* <ChallengesCard /> */}
-      <DateDisplay />
-
-      {/* <Tasks />  */}
+      <div className="hidden lg:grid grid-cols-2">
+        <div>
+          <Calendar />
+          <ChallengesCard />
+        </div>
+        <div className="flex justify-center">
+          <div className="w-4/5">
+            <Tasks />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

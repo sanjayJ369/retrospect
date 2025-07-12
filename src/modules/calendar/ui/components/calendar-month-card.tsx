@@ -21,7 +21,7 @@ const CalendarMonthCard = ({ monthData, className }: CalendarMonthProps) => {
                 backgroundColor: `rgba(120, 255, 120, ${1 - day.score * 0.01})`,
               }}
             >
-              <span className="hidden sm:block w-8 h-8 md:w-12 lg:w-18 text-center">
+              <span className="hidden sm:block w-6 h-6 md:w-6 md:h-6 lg:w-8 text-center">
                 {day.day}
               </span>
               <div className="block sm:hidden w-1 h-1"></div>
