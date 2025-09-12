@@ -12,6 +12,7 @@ import {
   CheckSquareIcon,
   MenuIcon,
   ZapIcon,
+  UserIcon, // Import from lucide-react
 } from "lucide-react";
 import { Button } from "@/components/ui/8bit/button";
 import { NavButton } from "@/components/ui/8bit/nav-button";
@@ -48,6 +49,12 @@ const HomeSidebar = () => {
       title: "ANALYTICS",
       href: "/analytics",
       Icon: BarChart2Icon,
+    },
+    {
+      key: "signin",
+      title: "SIGN IN",
+      href: "/signin",
+      Icon: UserIcon, // Import from lucide-react
     },
   ];
 
