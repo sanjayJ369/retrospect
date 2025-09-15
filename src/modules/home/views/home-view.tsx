@@ -1,7 +1,24 @@
-import Calendar from "@/modules/calendar/ui/components/calendar";
-import ChallengesCard from "@/modules/challenges/ui/challenges-card";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 import DateDisplay from "@/modules/date/ui/components/date-display";
-import Tasks from "@/modules/tasks/ui/sections/tasks";
+
+const Calendar = dynamic(
+  () => import("@/modules/calendar/ui/components/calendar"),
+  {
+    loading: () => <Skeleton className="h-64 w-full" />,
+  },
+);
+
+const ChallengesCard = dynamic(
+  () => import("@/modules/challenges/ui/challenges-card"),
+  {
+    loading: () => <Skeleton className="h-48 w-full" />,
+  },
+);
+
+const Tasks = dynamic(() => import("@/modules/tasks/ui/sections/tasks"), {
+  loading: () => <Skeleton className="h-96 w-full" />,
+});
 
 const HomeView = () => {
   return (

@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/8bit/dialog";
 import { useTaskQuery } from "@/hooks/api/tasks/useTaskQuery";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TaskDialogProps {
   id: string;
@@ -17,8 +18,7 @@ interface TaskDialogProps {
 const TaskDialog = ({ id, title }: TaskDialogProps) => {
   const { data: taskdata, isLoading, isError } = useTaskQuery(id);
   if (isLoading) {
-    // TODO: add skeliton
-    return <p>Loading</p>;
+    return <Skeleton className="h-10 w-full" />;
   }
 
   if (isError) {

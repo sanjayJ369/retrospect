@@ -213,34 +213,58 @@ export const StubStorageProvider: StorageProvider = {
   },
 
   async markChallengeNotDone(id: string): Promise<{ success: boolean }> {
-    completetions.get(id)?.set(new Date(), {
-      id: genId(),
-      challengeId: id,
-      date: new Date(),
-      completed: false,
-    });
+    const today = new Date();
+    const challenge = challenges.find((c) => c.id === id);
+    if (challenge) {
+      const entry = completetions.get(id)?.get(today);
+      if (entry) {
+        entry.completed = false;
+      }
+    }
     return { success: true };
   },
 
-  async editChallenge(
-    challengeData: ChallengeFormData,
-  ): Promise<{ challenge: Challenge; success: boolean }> {
-    const idx = challenges.findIndex((c) => c.id === challengeData.id);
-    if (idx === -1) throw new Error("Challenge not found");
+  async login(password: string, email: string): Promise<{ success: boolean }> {
+    console.log("Attempting login with", { email, password });
+    if (email === "test@test.com" && password === "password") {
+      localStorage.setItem("retro.access_token", "stub_token");
+      localStorage.setItem(
+        "retro.user",
+        JSON.stringify({ id: "stub_user_id", email: "test@test.com" }),
+      );
+      return { success: true };
+    }
+    return { success: false };
+  },
 
-    challenges[idx] = {
-      ...challenges[idx],
-      title: challengeData.title,
-      description: challengeData.description || "",
-      startDate: challengeData.startDate,
-      endDate: challengeData.endDate,
-      duration: getDuration(challengeData.startDate, challengeData.endDate),
-    };
+  async signup(password: string, email: string): Promise<{ success: boolean }> {
+    console.log("Attempting signup with", { email, password });
+    // In a real stub, you might want to add the user to an in-memory array
+    localStorage.setItem("retro.access_token", "stub_token");
+    localStorage.setItem(
+      "retro.user",
+      JSON.stringify({ id: "stub_user_id", email }),
+    );
+    return { success: true };
+  },
 
-    return {
-      challenge: challenges[idx],
-      success: true,
-    };
+  async logout(): Promise<{ success: boolean }> {
+    console.log("Logging out");
+    localStorage.removeItem("retro.access_token");
+    localStorage.removeItem("retro.user");
+    return { success: true };
+  },
+
+  async forgotPassword(email: string): Promise<{ success: boolean }> {
+    console.log("Forgot password for", email);
+    // Simulate sending a password reset email
+    return { success: true };
+  },
+
+  async resetPassword(password: string): Promise<{ success: boolean }> {
+    console.log("Resetting password to", password);
+    // Simulate resetting the password
+    return { success: true };
   },
 };
 

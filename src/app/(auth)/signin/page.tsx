@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/8bit/button";
 import { Input } from "@/components/ui/8bit/input";
 import { Label } from "@/components/ui/8bit/label";
@@ -13,26 +14,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/8bit/card";
+import { useAuth } from "@/context/auth-provider";
 
 const signinSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  name: z.string().min(1, "Name is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type SigninFormData = z.infer<typeof signinSchema>;
 
 const SigninPage = () => {
+  const router = useRouter();
+  const { login } = useAuth();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<SigninFormData>({
     resolver: zodResolver(signinSchema),
   });
 
-  const onSubmit: SubmitHandler<SigninFormData> = (data) => {
-    console.log("Signin data:", data);
-    // TODO: Implement signin logic (e.g., API call)
+  const onSubmit: SubmitHandler<SigninFormData> = async (data) => {
+    try {
+      await login({ name: data.name, password: data.password });
+      router.push("/");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to sign in";
+      setError("root", { message });
+    }
   };
 
   return (
@@ -44,31 +54,22 @@ const SigninPage = () => {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register("email")}
-                placeholder="Enter your email"
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email.message}</p>
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" type="text" {...register("name")} placeholder="Enter your name" />
+              {errors.name && (
+                <p className="text-xs text-red-500">{errors.name.message}</p>
               )}
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-                placeholder="Enter your password"
-              />
+              <Input id="password" type="password" {...register("password")} placeholder="Enter your password" />
               {errors.password && (
-                <p className="text-xs text-red-500">
-                  {errors.password.message}
-                </p>
+                <p className="text-xs text-red-500">{errors.password.message}</p>
               )}
             </div>
+            {errors.root && (
+              <p className="text-xs text-red-500">{errors.root.message}</p>
+            )}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Signing In..." : "Sign In"}
             </Button>

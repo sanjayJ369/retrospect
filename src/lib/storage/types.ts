@@ -27,10 +27,18 @@ export interface StorageProvider {
     challenge: ChallengeFormData,
   ): Promise<{ challenge: Challenge; success: boolean }>;
   editChallenge(
+    id: string,
     challenge: ChallengeFormData,
   ): Promise<{ challenge: Challenge; success: boolean }>;
 
   // id -> challenge, date -> date
   markChallengeDone(id: string): Promise<{ success: boolean }>;
   markChallengeNotDone(id: string): Promise<{ success: boolean }>;
+
+  // auth
+  login(password: string, email: string): Promise<{ success: boolean }>;
+  signup(password: string, email: string): Promise<{ success: boolean }>;
+  logout(): Promise<{ success: boolean }>;
+  forgotPassword(email: string): Promise<{ success: boolean }>;
+  resetPassword(password: string): Promise<{ success: boolean }>;
 }

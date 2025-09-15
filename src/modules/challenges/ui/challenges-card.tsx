@@ -1,6 +1,4 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/components/ui/8bit/card";
-import { CardTitle } from "@/components/ui/card";
 import ChallengesDropDown from "./challenges-dropdown";
 import { useEffect, useState } from "react";
 import { useAllChallengesQuery } from "@/hooks/api/challenges/useAllChallengesQuery";
@@ -16,6 +14,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/8bit/carousel";
 import Container from "@/components/ui/8bit/container";
+import ChallengesCardLoading from "./challenges-card-loading";
 
 const ChallengesCard = () => {
   const [challenge, setChallenge] = useState<Challenge>();
@@ -37,7 +36,7 @@ const ChallengesCard = () => {
   }, [challenges]);
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <ChallengesCardLoading />;
   }
   if (isError) {
     return <p>Error...</p>;
@@ -95,8 +94,8 @@ const ChallengesCard = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden sm:block" />
-              <CarouselNext className="hidden sm:block" />
+              <CarouselPrevious className="hidden sm:block m-2" />
+              <CarouselNext className="hidden sm:block m-2" />
             </Carousel>
           </div>
         </div>

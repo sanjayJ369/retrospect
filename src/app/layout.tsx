@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/context/query-provider";
+import { AuthProvider } from "@/context/auth-provider";
 
 const pressStart = Press_Start_2P({
   weight: ["400"],
@@ -31,18 +32,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body
         className={`${pressStart.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

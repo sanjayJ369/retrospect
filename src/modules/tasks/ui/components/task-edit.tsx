@@ -71,7 +71,7 @@ const TaskEdit = ({ open, setOpen, taskId }: TaskEditProps) => {
           <Label htmlFor="title">Title</Label>
           <Input id="title" {...register("title")} className="max-w-72" />
           {errors.title && (
-            <p className="text-xs text-red-500">{errors.title.message}</p>
+            <p className="text-xs text-destructive">{errors.title.message}</p>
           )}
 
           <Label htmlFor="description">Description</Label>
@@ -79,6 +79,11 @@ const TaskEdit = ({ open, setOpen, taskId }: TaskEditProps) => {
 
           <Label htmlFor="duration">Duration</Label>
           <Input id="duration" type="number" {...register("duration")} />
+          {errors.duration && (
+            <p className="text-xs text-destructive">
+              {errors.duration.message}
+            </p>
+          )}
 
           <DialogFooter>
             <Button size="sm" type="submit">
