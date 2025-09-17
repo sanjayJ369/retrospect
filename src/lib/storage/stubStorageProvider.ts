@@ -9,6 +9,7 @@ import type { TaskFormData } from "@/schemas/task-schema";
 import type { ChallengeFormData } from "@/schemas/challenge-schema";
 import { Challenge, ChallengeEntry } from "@/types/challenges";
 import { dateRange } from "../utils";
+import { differenceInDays } from "date-fns";
 
 const tasks: Task[] = [];
 let challenges: Challenge[] = [];
@@ -110,7 +111,7 @@ export const StubStorageProvider: StorageProvider = {
     return task;
   },
 
-  async getAllTasks(_date: string): Promise<Task[]> {
+  async getAllTasks(): Promise<Task[]> {
     return [...tasks];
   },
 
@@ -202,50 +203,154 @@ export const StubStorageProvider: StorageProvider = {
     };
   },
 
-  async markChallengeDone(id: string): Promise<{ success: boolean }> {
-    completetions.get(id)?.set(new Date(), {
-      id: genId(),
-      challengeId: id,
-      date: new Date(),
-      completed: true,
-    });
-    return { success: true };
+  async setTaskDone(
+    id: string,
+    done: boolean,
+  ): Promise<{ task: Task; success: boolean }> {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) {
+      throw new Error("Task not found");
+    }
+    task.done = done;
+    return { task, success: true };
   },
 
-  async markChallengeNotDone(id: string): Promise<{ success: boolean }> {
-    const today = new Date();
-    const challenge = challenges.find((c) => c.id === id);
-    if (challenge) {
-      const entry = completetions.get(id)?.get(today);
-      if (entry) {
-        entry.completed = false;
+  async editChallenge(
+    id: string,
+    challengeData: ChallengeFormData,
+  ): Promise<{ challenge: Challenge; success: boolean }> {
+    const challengeIndex = challenges.findIndex((c) => c.id === id);
+    if (challengeIndex === -1) {
+      throw new Error("Challenge not found");
+    }
+    const oldChallenge = challenges[challengeIndex];
+    const newChallenge: Challenge = {
+      ...oldChallenge,
+      title: challengeData.title,
+      description: challengeData.description ?? "",
+      startDate: challengeData.startDate,
+      endDate: challengeData.endDate,
+      duration:
+        differenceInDays(challengeData.endDate, challengeData.startDate) + 1,
+    };
+    challenges[challengeIndex] = newChallenge;
+
+    // In a real scenario, you might want to update the completions map as well
+    // especially if the date range changes.
+    // For this stub, we'll keep it simple.
+
+    return {
+      challenge: newChallenge,
+      success: true,
+    };
+  },
+
+  async markChallengeDone(
+    id: string,
+    date: Date,
+    done: boolean,
+  ): Promise<{ success: boolean; entry: ChallengeEntry }> {
+    const challengeCompletions = completetions.get(id);
+    if (!challengeCompletions) {
+      // Or handle as per desired logic, maybe throw an error
+      throw new Error(`No completions found for challenge id: ${id}`);
+    }
+
+    let entryToUpdate: ChallengeEntry | undefined;
+    let entryDateToUpdate: Date | undefined;
+
+    for (const [entryDate, entry] of challengeCompletions.entries()) {
+      if (
+        entryDate.getFullYear() === date.getFullYear() &&
+        entryDate.getMonth() === date.getMonth() &&
+        entryDate.getDate() === date.getDate()
+      ) {
+        entryToUpdate = entry;
+        entryDateToUpdate = entryDate;
+        break;
       }
     }
-    return { success: true };
-  },
 
-  async login(password: string, email: string): Promise<{ success: boolean }> {
-    console.log("Attempting login with", { email, password });
-    if (email === "test@test.com" && password === "password") {
-      localStorage.setItem("retro.access_token", "stub_token");
-      localStorage.setItem(
-        "retro.user",
-        JSON.stringify({ id: "stub_user_id", email: "test@test.com" }),
-      );
-      return { success: true };
+    if (entryToUpdate && entryDateToUpdate) {
+      entryToUpdate.completed = done;
+      challengeCompletions.set(entryDateToUpdate, entryToUpdate);
+      return { success: true, entry: entryToUpdate };
     }
-    return { success: false };
+
+    // If no entry for that date, we might need to create one
+    const newEntry: ChallengeEntry = {
+      id: genId(),
+      challengeId: id,
+      date: date,
+      completed: done,
+    };
+    challengeCompletions.set(date, newEntry);
+
+    return { success: true, entry: newEntry };
   },
 
-  async signup(password: string, email: string): Promise<{ success: boolean }> {
-    console.log("Attempting signup with", { email, password });
-    // In a real stub, you might want to add the user to an in-memory array
-    localStorage.setItem("retro.access_token", "stub_token");
-    localStorage.setItem(
-      "retro.user",
-      JSON.stringify({ id: "stub_user_id", email }),
-    );
+  async markChallengeNotDone(
+    id: string,
+    date: Date,
+  ): Promise<{ success: boolean }> {
+    const challengeCompletions = completetions.get(id);
+    if (!challengeCompletions) {
+      return { success: false };
+    }
+
+    let entryToUpdate: ChallengeEntry | undefined;
+    let entryDateToUpdate: Date | undefined;
+
+    for (const [entryDate, entry] of challengeCompletions.entries()) {
+      if (
+        entryDate.getFullYear() === date.getFullYear() &&
+        entryDate.getMonth() === date.getMonth() &&
+        entryDate.getDate() === date.getDate()
+      ) {
+        entryToUpdate = entry;
+        entryDateToUpdate = entryDate;
+        break;
+      }
+    }
+
+    if (entryToUpdate && entryDateToUpdate) {
+      entryToUpdate.completed = false;
+      challengeCompletions.set(entryDateToUpdate, entryToUpdate);
+    }
+
     return { success: true };
+  },
+
+  async login(name: string, password: string) {
+    console.log("Attempting login with", { name, password });
+    if (name === "test" && password === "password") {
+      const user = { id: "stub_user_id", email: "test@test.com", name: "test" };
+      const accessToken = "stub_token";
+      localStorage.setItem("retro.access_token", accessToken);
+      localStorage.setItem("retro.user", JSON.stringify(user));
+      return {
+        success: true,
+        access_token: accessToken,
+        refresh_token: "stub_refresh_token",
+        user,
+      };
+    }
+    throw new Error("Invalid credentials");
+  },
+
+  async signup(password: string, email: string, name: string) {
+    console.log("Attempting signup with", { email, password, name });
+    // In a real stub, you might want to add the user to an in-memory array
+    const user = { id: "stub_user_id", email, name };
+    const accessToken = "stub_token";
+    localStorage.setItem("retro.access_token", accessToken);
+    localStorage.setItem("retro.user", JSON.stringify(user));
+    return {
+      success: true,
+      access_token: accessToken,
+      refresh_token: "stub_refresh_token",
+      user,
+    };
   },
 
   async logout(): Promise<{ success: boolean }> {
@@ -265,6 +370,13 @@ export const StubStorageProvider: StorageProvider = {
     console.log("Resetting password to", password);
     // Simulate resetting the password
     return { success: true };
+  },
+
+  async verifyEmail() {
+    throw new Error("Method not implemented.");
+  },
+  async resendVerificationEmail() {
+    throw new Error("Method not implemented.");
   },
 };
 

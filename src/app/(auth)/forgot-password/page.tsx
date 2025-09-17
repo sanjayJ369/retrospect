@@ -45,7 +45,7 @@ const ForgotPasswordPage = () => {
         const error = await res.json();
         setMessage(error.message || "Failed to send password reset email.");
       }
-    } catch (err) {
+    } catch {
       setMessage("An error occurred.");
     }
   };

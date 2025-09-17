@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/8bit/button";
 import Link from "next/link";
 
-const VerifyEmailPage = () => {
+const VerifyEmailForm = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [message, setMessage] = useState("Verifying your email...");
@@ -46,6 +46,14 @@ const VerifyEmailPage = () => {
         <Button>Go to Sign In</Button>
       </Link>
     </div>
+  );
+};
+
+const VerifyEmailPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailForm />
+    </Suspense>
   );
 };
 

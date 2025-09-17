@@ -54,7 +54,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
               <Button variant="secondary" onClick={() => setOpen(false)}>
                 Close
               </Button>
-              <Button onClick={handleDontShow}>Don't show again</Button>
+              <Button onClick={handleDontShow}>Don&apos;t show again</Button>
             </div>
           </DialogFooter>
         </DialogContent>

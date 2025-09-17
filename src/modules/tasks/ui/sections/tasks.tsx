@@ -1,12 +1,6 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/8bit/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/8bit/card";
 import TaskNew from "../components/task-new";
-import { Separator } from "@/components/ui/8bit/separator";
 import Container from "@/components/ui/8bit/container";
 import { useAllTaskQuery } from "@/hooks/api/tasks/useAllTasksQuery";
 import TaskCard from "../components/task-card";

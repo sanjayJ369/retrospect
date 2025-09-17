@@ -6,8 +6,8 @@ const useEditChallengeMutation = () => {
   const queryClient = useQueryClient();
   const storage = getStorageProvider();
   return useMutation({
-    mutationFn: (challenge: ChallengeFormData) =>
-      storage.editChallenge(challenge),
+    mutationFn: (variables: { id: string; challenge: ChallengeFormData }) =>
+      storage.editChallenge(variables.id, variables.challenge),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["challenges"] });
     },

@@ -27,6 +27,7 @@ export type AuthState = {
 };
 
 export type AuthContextValue = AuthState & {
+  storage: ReturnType<typeof getStorageProvider>;
   login: (params: { name: string; password: string }) => Promise<void>;
   signup: (params: {
     name: string;
@@ -117,11 +118,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     async ({ name, password }: { name: string; password: string }) => {
-      const { user, accessToken, refreshToken } =
-        await getStorageProvider().login(password, name);
-      setTokens(accessToken, refreshToken);
-      setUser(user);
-      writeStoredJSON(USER_KEY, user);
+      const data = await getStorageProvider().login(name, password);
+      setTokens(data.access_token, data.refresh_token);
+      setUser(data.user);
+      writeStoredJSON(USER_KEY, data.user);
     },
     [setTokens],
   );
@@ -136,10 +136,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: string;
       password: string;
     }) => {
-      await getStorageProvider().signup(password, email, name);
-      // Do not auto-login; require email verification. Optionally redirect caller.
+      const data = await getStorageProvider().signup(password, email, name);
+      setTokens(data.access_token, data.refresh_token);
+      setUser(data.user);
+      writeStoredJSON(USER_KEY, data.user);
     },
-    [],
+    [setTokens],
   );
 
   const refreshTokenIfNeeded = useCallback(async () => {
@@ -190,6 +192,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signup,
       logout,
       setTokens,
+      storage: getStorageProvider(),
     }),
     [
       user,

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button as ShadcnButton } from "@/components/ui/button";
 import React from "react";
 import { useSound } from "@/hooks/useSound";
+import { Slot } from "@radix-ui/react-slot";
 
 const pressStart = Press_Start_2P({
   weight: ["400"],
@@ -52,6 +53,7 @@ function Button({
   variant,
   size,
   onClick: parentOnClick,
+  asChild = false,
   ...restProps
 }: BitButtonProps) {
   const { font } = restProps;
@@ -65,9 +67,11 @@ function Button({
     }
   };
 
+  const Comp = asChild ? Slot : ShadcnButton;
+
   return (
-    <ShadcnButton
-      onClick={handleClick}
+    <Comp
+      onClick={!asChild ? handleClick : undefined}
       {...restProps}
       className={cn(
         "rounded-none active:translate-y-1 transition-transform relative",
@@ -152,7 +156,7 @@ function Button({
           />
         </>
       )}
-    </ShadcnButton>
+    </Comp>
   );
 }
 

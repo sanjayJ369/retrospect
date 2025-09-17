@@ -37,6 +37,7 @@ export const OfflineStorageProvider: StorageProvider = {
     // Dexie's add will return the ID.
     const id = await db.tasks.add({
       ...task,
+      description: task.description ?? "",
       id: crypto.randomUUID(),
       done: false,
     });
@@ -49,8 +50,24 @@ export const OfflineStorageProvider: StorageProvider = {
     return db.tasks.toArray();
   },
 
-  async getChallenge(id: string): Promise<Challenge | null> {
-    return (await db.challenges.get(id)) || null;
+  async setTaskDone(
+    id: string,
+    done: boolean,
+  ): Promise<{ task: Task; success: boolean }> {
+    await db.tasks.update(id, { done });
+    const task = await db.tasks.get(id);
+    if (!task) {
+      throw new Error("Task not found after update");
+    }
+    return { task, success: true };
+  },
+
+  async getChallenge(id: string): Promise<Challenge> {
+    const challenge = await db.challenges.get(id);
+    if (!challenge) {
+      throw new Error(`Challenge with id ${id} not found.`);
+    }
+    return challenge;
   },
 
   async getAllChallenges() {
@@ -58,8 +75,14 @@ export const OfflineStorageProvider: StorageProvider = {
   },
 
   async createChallenge(challenge: ChallengeFormData) {
+    const duration = Math.ceil(
+      (challenge.endDate.getTime() - challenge.startDate.getTime()) /
+        (1000 * 60 * 60 * 24),
+    );
     const id = await db.challenges.add({
       ...challenge,
+      description: challenge.description ?? "",
+      duration,
       id: crypto.randomUUID(),
     });
     const newChallenge = await db.challenges.get(id);
@@ -78,32 +101,65 @@ export const OfflineStorageProvider: StorageProvider = {
     return { id, success: true };
   },
 
-  async getAllChallengeEntries(challengeId: string) {
+  async getChallengeEntries(challengeId: string) {
     return db.challengeEntries.where({ challengeId }).toArray();
   },
 
-  async setChallengeEntryDone(
-    id: string,
+  async markChallengeDone(
+    challengeId: string,
+    date: Date,
     done: boolean,
-  ): Promise<{ entry: ChallengeEntry; success: boolean }> {
-    await db.challengeEntries.update(id, { done });
-    const entry = await db.challengeEntries.get(id);
-    return { entry: entry!, success: true };
+  ): Promise<{ success: boolean; entry: ChallengeEntry }> {
+    const entry = await db.challengeEntries
+      .where({ challengeId, date })
+      .first();
+    if (entry) {
+      await db.challengeEntries.update(entry.id, { completed: done });
+      const updatedEntry = await db.challengeEntries.get(entry.id);
+      return { success: true, entry: updatedEntry! };
+    }
+    const newEntry: ChallengeEntry = {
+      id: crypto.randomUUID(),
+      challengeId,
+      date,
+      completed: done,
+    };
+    await db.challengeEntries.add(newEntry);
+    return { success: true, entry: newEntry };
   },
 
-  async login(password: string, email: string): Promise<{ success: boolean }> {
+  async markChallengeNotDone(
+    challengeId: string,
+    date: Date,
+  ): Promise<{ success: boolean }> {
+    const entry = await db.challengeEntries
+      .where({ challengeId, date })
+      .first();
+    if (entry) {
+      await db.challengeEntries.update(entry.id, { completed: false });
+    }
+    return { success: true };
+  },
+
+  async login() {
     throw new Error("Method not implemented.");
   },
-  async signup(password: string, email: string): Promise<{ success: boolean }> {
+  async signup() {
     throw new Error("Method not implemented.");
   },
-  async logout(): Promise<{ success: boolean }> {
+  async logout() {
     throw new Error("Method not implemented.");
   },
-  async forgotPassword(email: string): Promise<{ success: boolean }> {
+  async forgotPassword() {
     throw new Error("Method not implemented.");
   },
-  async resetPassword(password: string): Promise<{ success: boolean }> {
+  async resetPassword() {
+    throw new Error("Method not implemented.");
+  },
+  async verifyEmail() {
+    throw new Error("Method not implemented.");
+  },
+  async resendVerificationEmail() {
     throw new Error("Method not implemented.");
   },
 };

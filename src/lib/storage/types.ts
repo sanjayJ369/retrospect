@@ -17,6 +17,10 @@ export interface StorageProvider {
   ): Promise<{ task: Task; success: boolean }>;
   createTask(task: TaskFormData): Promise<{ task: Task; success: boolean }>;
   getAllTasks(date: string): Promise<Task[]>;
+  setTaskDone(
+    id: string,
+    done: boolean,
+  ): Promise<{ task: Task; success: boolean }>;
 
   // challenges
   getAllChallenges(): Promise<Challenge[]>;
@@ -32,13 +36,29 @@ export interface StorageProvider {
   ): Promise<{ challenge: Challenge; success: boolean }>;
 
   // id -> challenge, date -> date
-  markChallengeDone(id: string): Promise<{ success: boolean }>;
-  markChallengeNotDone(id: string): Promise<{ success: boolean }>;
+  markChallengeDone(
+    id: string,
+    date: Date,
+    done: boolean,
+  ): Promise<{ success: boolean; entry: ChallengeEntry }>;
+  markChallengeNotDone(id: string, date: Date): Promise<{ success: boolean }>;
 
   // auth
-  login(password: string, email: string): Promise<{ success: boolean }>;
-  signup(password: string, email: string): Promise<{ success: boolean }>;
+  login(name: string, password: string): Promise<LoginResponse>;
+  signup(password: string, email: string, name: string): Promise<LoginResponse>;
   logout(): Promise<{ success: boolean }>;
   forgotPassword(email: string): Promise<{ success: boolean }>;
-  resetPassword(password: string): Promise<{ success: boolean }>;
+  resetPassword(password: string, token: string): Promise<{ success: boolean }>;
+  verifyEmail(token: string): Promise<{ success: boolean }>;
+  resendVerificationEmail(email: string): Promise<{ success: boolean }>;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }

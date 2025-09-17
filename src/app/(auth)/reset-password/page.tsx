@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/8bit/card";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const resetPasswordSchema = z
@@ -27,7 +27,7 @@ const resetPasswordSchema = z
 
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-const ResetPasswordPage = () => {
+const ResetPasswordForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -61,7 +61,7 @@ const ResetPasswordPage = () => {
         const error = await res.json();
         setMessage(error.message || "Failed to reset password.");
       }
-    } catch (err) {
+    } catch {
       setMessage("An error occurred.");
     }
   };
@@ -113,6 +113,14 @@ const ResetPasswordPage = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+const ResetPasswordPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 };
 

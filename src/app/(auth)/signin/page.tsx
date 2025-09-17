@@ -55,16 +55,28 @@ const SigninPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Label htmlFor="name">Name</Label>
-              <Input id="name" type="text" {...register("name")} placeholder="Enter your name" />
+              <Input
+                id="name"
+                type="text"
+                {...register("name")}
+                placeholder="Enter your name"
+              />
               {errors.name && (
                 <p className="text-xs text-red-500">{errors.name.message}</p>
               )}
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" {...register("password")} placeholder="Enter your password" />
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                placeholder="Enter your password"
+              />
               {errors.password && (
-                <p className="text-xs text-red-500">{errors.password.message}</p>
+                <p className="text-xs text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             {errors.root && (
@@ -75,7 +87,7 @@ const SigninPage = () => {
             </Button>
           </form>
           <p className="text-center text-sm mt-4">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-blue-500 hover:underline">
               Sign up
             </Link>

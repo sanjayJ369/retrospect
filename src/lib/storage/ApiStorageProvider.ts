@@ -1,5 +1,5 @@
-import type { StorageProvider } from "./types";
-import { StubStorageProvider } from "./stubStorageProvider";
+import type { LoginResponse, StorageProvider } from "./types";
+
 import type { Task } from "@/types/tasks";
 import type { TaskFormData } from "@/schemas/task-schema";
 import type { CalendarYear } from "@/types/calendar";
@@ -32,10 +32,13 @@ function getCurrentUserId(): string | null {
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const baseUrl = getBaseUrl();
   const token = getAccessToken();
-  const headers: HeadersInit = {
-    ...(init?.headers || {}),
-  };
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const headers = new Headers(init?.headers);
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
   const res = await fetch(`${baseUrl}${path}`, {
     ...init,
     headers,
@@ -108,6 +111,18 @@ export const ApiStorageProvider: StorageProvider = {
     return data;
   },
 
+  async setTaskDone(
+    id: string,
+    done: boolean,
+  ): Promise<{ task: Task; success: boolean }> {
+    const data = await apiFetch<Task>(`/tasks/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ done }),
+    });
+    return { task: data, success: true };
+  },
+
   async getAllChallenges(): Promise<Challenge[]> {
     const userId = getCurrentUserId();
     if (!userId) {
@@ -126,17 +141,21 @@ export const ApiStorageProvider: StorageProvider = {
     return data;
   },
 
-  async getChallengeEntries(id: string): Promise<ChallengeEntry[]> {
+  async getChallengeEntries(challengeId: string): Promise<ChallengeEntry[]> {
+    const userId = getCurrentUserId();
+    if (!userId) {
+      throw new Error("User ID not found");
+    }
     const data = await apiFetch<ChallengeEntry[]>(
-      `/challenges/${id}` as unknown as string,
+      `/users/${userId}/challenges/${challengeId}/entries`,
       {
         method: "GET",
       },
     );
-    // If backend exposes entries separately adapt here; fallback to stub otherwise
-    if (!Array.isArray(data))
-      return StubStorageProvider.getChallengeEntries(id);
-    return data;
+    return data.map((entry) => ({
+      ...entry,
+      date: new Date(entry.date),
+    }));
   },
 
   async deleteChallenge(id: string): Promise<{ id: string; success: boolean }> {
@@ -174,72 +193,116 @@ export const ApiStorageProvider: StorageProvider = {
     return { challenge: updated, success: true };
   },
 
-  async markChallengeDone(id: string) {
-    // Not exact endpoint; emulate via PUT challenge-entries if available
-    try {
-      await apiFetch(`/challenge-entries/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_completed: true }),
-      });
-      return { success: true };
-    } catch {
-      return StubStorageProvider.markChallengeDone(id);
-    }
-  },
+  async markChallengeDone(id: string, date: Date, done: boolean) {
+    const entries = await this.getChallengeEntries(id);
+    const entry = entries.find(
+      (e) =>
+        e.date.toISOString().slice(0, 10) === date.toISOString().slice(0, 10),
+    );
 
-  async markChallengeNotDone(id: string) {
-    try {
-      await apiFetch(`/challenge-entries/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_completed: false }),
-      });
-      return { success: true };
-    } catch {
-      return StubStorageProvider.markChallengeNotDone(id);
+    if (!entry) {
+      // This case should ideally not happen in the UI
+      throw new Error("Challenge entry not found for the given date.");
     }
-  },
 
-  async getAllChallengeEntries(challengeId: string) {
-    const userId = getCurrentUserId();
-    if (!userId) {
-      throw new Error("User ID not found");
-    }
-    const data = await apiFetch<ChallengeEntry[]>(
-      `/users/${userId}/challenges/${challengeId}/entries`,
+    const updatedEntry = await apiFetch<ChallengeEntry>(
+      `/challenge-entries/${entry.id}`,
       {
-        method: "GET",
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_completed: done }),
       },
     );
-    return data;
+
+    return { success: true, entry: updatedEntry };
   },
 
-  async setChallengeEntryDone(
-    id: string,
-    done: boolean,
-  ): Promise<{ entry: ChallengeEntry; success: boolean }> {
-    const data = await apiFetch<ChallengeEntry>(`/challenge-entries/${id}`, {
+  async markChallengeNotDone(id: string, date: Date) {
+    const entries = await this.getChallengeEntries(id);
+    const entry = entries.find(
+      (e) =>
+        e.date.toISOString().slice(0, 10) === date.toISOString().slice(0, 10),
+    );
+
+    if (!entry) {
+      // This case should ideally not happen in the UI
+      throw new Error("Challenge entry not found for the given date.");
+    }
+
+    await apiFetch(`/challenge-entries/${entry.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done }),
+      body: JSON.stringify({ is_completed: false }),
     });
-    return { entry: data, success: true };
+
+    return { success: true };
   },
 
-  async login(password: string, email: string): Promise<{ success: boolean }> {
-    throw new Error("Method not implemented.");
+  async login(name: string, password: string): Promise<LoginResponse> {
+    const data = await apiFetch<LoginResponse>("/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, password }),
+    });
+    return data;
   },
-  async signup(password: string, email: string): Promise<{ success: boolean }> {
-    throw new Error("Method not implemented.");
+  async signup(
+    password: string,
+    email: string,
+    name: string,
+  ): Promise<LoginResponse> {
+    await apiFetch("/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    // After signup, login to get tokens
+    const data = await apiFetch<LoginResponse>("/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, password }),
+    });
+
+    return data;
   },
   async logout(): Promise<{ success: boolean }> {
-    throw new Error("Method not implemented.");
+    // Logout is handled client-side by clearing tokens
+    return { success: true };
   },
   async forgotPassword(email: string): Promise<{ success: boolean }> {
-    throw new Error("Method not implemented.");
+    await apiFetch("/users/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    return { success: true };
   },
-  async resetPassword(password: string): Promise<{ success: boolean }> {
-    throw new Error("Method not implemented.");
+  async resetPassword(
+    password: string,
+    token: string,
+  ): Promise<{ success: boolean }> {
+    await apiFetch("/users/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ new_password: password, token }),
+    });
+    return { success: true };
+  },
+  async verifyEmail(token: string): Promise<{ success: boolean }> {
+    await apiFetch("/users/verify-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+    return { success: true };
+  },
+  async resendVerificationEmail(email: string): Promise<{ success: boolean }> {
+    await apiFetch("/users/resend-verification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    return { success: true };
   },
 };

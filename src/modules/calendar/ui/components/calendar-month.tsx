@@ -4,10 +4,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
 } from "@/components/ui/8bit/dropdown-menu";
-import { useSound } from "@/hooks/useSound";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-import { memo, useState } from "react";
+import { memo } from "react";
 
 interface CalendarMonthProps {
   setMonth: (year: number) => void;

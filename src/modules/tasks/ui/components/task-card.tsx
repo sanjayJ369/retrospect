@@ -5,8 +5,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import TaskDialog from "./task-dialog";
 import TaskMutate from "./task-mutate";
-import useEditTaskMutation from "@/hooks/api/tasks/useEditTaskMutation";
-import { useTaskQuery } from "@/hooks/api/tasks/useTaskQuery";
+import { useSetTaskDoneMutation } from "@/hooks/api/tasks/useSetTaskDoneMutation";
 
 interface TaskCardProps {
   id: string;
@@ -16,13 +15,10 @@ interface TaskCardProps {
 
 const TaskCard = ({ id, title, checked }: TaskCardProps) => {
   const [done, setDone] = useState<boolean>(checked);
-  const { data: task } = useTaskQuery(id);
-  const { mutate: editTask } = useEditTaskMutation();
+  const { mutate: setTaskDone } = useSetTaskDoneMutation();
 
   const handleCheck = (checked: boolean) => {
-    if (task) {
-      editTask({ id, task: { ...task, done: checked } });
-    }
+    setTaskDone({ id, done: checked });
     setDone(checked);
   };
   return (
