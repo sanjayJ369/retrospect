@@ -1,6 +1,6 @@
 "use client";
 
-import { getStorageProvider } from "@/lib/storage/StorageProvider";
+import { ApiProvider, LoginResponse } from "@/lib/api/types";
 import React, {
   createContext,
   useCallback,
@@ -9,6 +9,9 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { apiFetch } from "@/lib/utils";
+import { BackendApiProvider } from "@/lib/api/BackendApiProvider";
+import { OfflineApiProvider } from "@/lib/api/OfflineApiProvider";
 
 export type AuthUser = {
   id: string;
@@ -27,7 +30,7 @@ export type AuthState = {
 };
 
 export type AuthContextValue = AuthState & {
-  storage: ReturnType<typeof getStorageProvider>;
+  storage: ApiProvider;
   login: (params: { name: string; password: string }) => Promise<void>;
   signup: (params: {
     name: string;
@@ -36,6 +39,10 @@ export type AuthContextValue = AuthState & {
   }) => Promise<void>;
   logout: () => void;
   setTokens: (accessToken: string | null, refreshToken: string | null) => void;
+  forgotPassword(email: string): Promise<{ success: boolean }>;
+  resetPassword(password: string, token: string): Promise<{ success: boolean }>;
+  verifyEmail(token: string): Promise<{ success: boolean }>;
+  resendVerificationEmail(email: string): Promise<{ success: boolean }>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -73,23 +80,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
+  const isAuthorized = !!accessToken;
+
+  const storage = useMemo<ApiProvider>(() => {
+    if (isAuthorized) {
+      console.log("AuthProvider is providing: BackendApiProvider");
+      return BackendApiProvider;
+    }
+    console.log("AuthProvider is providing: OfflineApiProvider");
+    return OfflineApiProvider;
+  }, [isAuthorized]);
+
+  // get previous stored values
   useEffect(() => {
-    const storedAccess =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem(ACCESS_TOKEN_KEY)
-        : null;
-    const storedRefresh =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem(REFRESH_TOKEN_KEY)
-        : null;
+    const storedAccess = window.localStorage.getItem(ACCESS_TOKEN_KEY);
+    const storedRefresh = window.localStorage.getItem(REFRESH_TOKEN_KEY);
     const storedUser = readStoredJSON<AuthUser>(USER_KEY);
+
     setAccessToken(storedAccess);
     setRefreshToken(storedRefresh);
     setUser(storedUser);
     setIsBootstrapping(false);
   }, []);
-
-  const isAuthorized = !!accessToken;
 
   const setTokens = useCallback(
     (newAccess: string | null, newRefresh: string | null) => {
@@ -110,7 +122,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const logout = useCallback(() => {
-    getStorageProvider().logout();
     setTokens(null, null);
     setUser(null);
     removeStored(USER_KEY);
@@ -118,7 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(
     async ({ name, password }: { name: string; password: string }) => {
-      const data = await getStorageProvider().login(name, password);
+      const data = await apiFetch<LoginResponse>("/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, password }),
+      });
+
       setTokens(data.access_token, data.refresh_token);
       setUser(data.user);
       writeStoredJSON(USER_KEY, data.user);
@@ -136,12 +152,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: string;
       password: string;
     }) => {
-      const data = await getStorageProvider().signup(password, email, name);
+      await apiFetch("/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await apiFetch<LoginResponse>("/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, password }),
+      });
+
       setTokens(data.access_token, data.refresh_token);
       setUser(data.user);
       writeStoredJSON(USER_KEY, data.user);
     },
     [setTokens],
+  );
+
+  const forgotPassword = useCallback(
+    async (email: string): Promise<{ success: boolean }> => {
+      await apiFetch("/users/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      return { success: true };
+    },
+    [],
+  );
+
+  const resetPassword = useCallback(
+    async (password: string, token: string): Promise<{ success: boolean }> => {
+      await apiFetch("/users/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ new_password: password, token }),
+      });
+      return { success: true };
+    },
+    [],
+  );
+
+  const verifyEmail = useCallback(
+    async (token: string): Promise<{ success: boolean }> => {
+      await apiFetch("/users/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      return { success: true };
+    },
+    [],
+  );
+
+  const resendVerificationEmail = useCallback(
+    async (email: string): Promise<{ success: boolean }> => {
+      await apiFetch("/users/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      return { success: true };
+    },
+    [],
   );
 
   const refreshTokenIfNeeded = useCallback(async () => {
@@ -192,7 +267,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signup,
       logout,
       setTokens,
-      storage: getStorageProvider(),
+      storage: storage,
+      forgotPassword,
+      resetPassword,
+      verifyEmail,
+      resendVerificationEmail,
     }),
     [
       user,
@@ -204,6 +283,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signup,
       logout,
       setTokens,
+      storage,
+      forgotPassword,
+      resetPassword,
+      verifyEmail,
+      resendVerificationEmail,
     ],
   );
 

@@ -1,21 +1,10 @@
-import type { LoginResponse, StorageProvider } from "./types";
-
 import type { Task } from "@/types/tasks";
 import type { TaskFormData } from "@/schemas/task-schema";
 import type { CalendarYear } from "@/types/calendar";
 import type { Challenge, ChallengeEntry } from "@/types/challenges";
 import type { ChallengeFormData } from "@/schemas/challenge-schema";
-
-function getBaseUrl() {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!base) throw new Error("NEXT_PUBLIC_API_BASE_URL is not set");
-  return base;
-}
-
-function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem("retro.access_token");
-}
+import { apiFetch } from "../utils";
+import { ApiProvider } from "./types";
 
 function getCurrentUserId(): string | null {
   if (typeof window === "undefined") return null;
@@ -29,31 +18,7 @@ function getCurrentUserId(): string | null {
   }
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const baseUrl = getBaseUrl();
-  const token = getAccessToken();
-  const headers = new Headers(init?.headers);
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-  if (!headers.has("Content-Type")) {
-    headers.set("Content-Type", "application/json");
-  }
-  const res = await fetch(`${baseUrl}${path}`, {
-    ...init,
-    headers,
-  });
-  if (!res.ok) {
-    let detail: unknown = undefined;
-    try {
-      detail = await res.json();
-    } catch {}
-    throw new Error(`API error ${res.status}: ${JSON.stringify(detail)}`);
-  }
-  return (await res.json()) as T;
-}
-
-export const ApiStorageProvider: StorageProvider = {
+export const BackendApiProvider: ApiProvider = {
   async getCalendarYear(year: number): Promise<CalendarYear | null> {
     const userId = getCurrentUserId();
     if (!userId) {
@@ -238,71 +203,71 @@ export const ApiStorageProvider: StorageProvider = {
     return { success: true };
   },
 
-  async login(name: string, password: string): Promise<LoginResponse> {
-    const data = await apiFetch<LoginResponse>("/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, password }),
-    });
-    return data;
-  },
-  async signup(
-    password: string,
-    email: string,
-    name: string,
-  ): Promise<LoginResponse> {
-    await apiFetch("/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
+  // async login(name: string, password: string): Promise<LoginResponse> {
+  //   const data = await apiFetch<LoginResponse>("/users/login", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ name, password }),
+  //   });
+  //   return data;
+  // },
+  // async signup(
+  //   password: string,
+  //   email: string,
+  //   name: string,
+  // ): Promise<LoginResponse> {
+  //   await apiFetch("/users", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ name, email, password }),
+  //   });
 
-    // After signup, login to get tokens
-    const data = await apiFetch<LoginResponse>("/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, password }),
-    });
+  //   // After signup, login to get tokens
+  //   const data = await apiFetch<LoginResponse>("/users/login", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ name, password }),
+  //   });
 
-    return data;
-  },
-  async logout(): Promise<{ success: boolean }> {
-    // Logout is handled client-side by clearing tokens
-    return { success: true };
-  },
-  async forgotPassword(email: string): Promise<{ success: boolean }> {
-    await apiFetch("/users/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    return { success: true };
-  },
-  async resetPassword(
-    password: string,
-    token: string,
-  ): Promise<{ success: boolean }> {
-    await apiFetch("/users/reset-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ new_password: password, token }),
-    });
-    return { success: true };
-  },
-  async verifyEmail(token: string): Promise<{ success: boolean }> {
-    await apiFetch("/users/verify-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    return { success: true };
-  },
-  async resendVerificationEmail(email: string): Promise<{ success: boolean }> {
-    await apiFetch("/users/resend-verification", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    return { success: true };
-  },
+  //   return data;
+  // },
+  // async logout(): Promise<{ success: boolean }> {
+  //   // Logout is handled client-side by clearing tokens
+  //   return { success: true };
+  // },
+  // async forgotPassword(email: string): Promise<{ success: boolean }> {
+  //   await apiFetch("/users/forgot-password", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email }),
+  //   });
+  //   return { success: true };
+  // },
+  // async resetPassword(
+  //   password: string,
+  //   token: string,
+  // ): Promise<{ success: boolean }> {
+  //   await apiFetch("/users/reset-password", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ new_password: password, token }),
+  //   });
+  //   return { success: true };
+  // },
+  // async verifyEmail(token: string): Promise<{ success: boolean }> {
+  //   await apiFetch("/users/verify-email", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ token }),
+  //   });
+  //   return { success: true };
+  // },
+  // async resendVerificationEmail(email: string): Promise<{ success: boolean }> {
+  //   await apiFetch("/users/resend-verification", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email }),
+  //   });
+  //   return { success: true };
+  // },
 };

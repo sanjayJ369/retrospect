@@ -1,4 +1,4 @@
-import type { StorageProvider } from "./types";
+import type { ApiProvider } from "./types";
 import type { Task } from "@/types/tasks";
 import type {
   CalendarYear,
@@ -91,7 +91,7 @@ initialChallenges.forEach((challenge) => {
   });
 });
 
-export const StubStorageProvider: StorageProvider = {
+export const StubApiProvider: ApiProvider = {
   async getCalendarYear(year: number): Promise<CalendarYear | null> {
     if (Math.random() < 0.1) return null;
     const months: CalendarMonth[] = [];
@@ -319,64 +319,6 @@ export const StubStorageProvider: StorageProvider = {
     }
 
     return { success: true };
-  },
-
-  async login(name: string, password: string) {
-    console.log("Attempting login with", { name, password });
-    if (name === "test" && password === "password") {
-      const user = { id: "stub_user_id", email: "test@test.com", name: "test" };
-      const accessToken = "stub_token";
-      localStorage.setItem("retro.access_token", accessToken);
-      localStorage.setItem("retro.user", JSON.stringify(user));
-      return {
-        success: true,
-        access_token: accessToken,
-        refresh_token: "stub_refresh_token",
-        user,
-      };
-    }
-    throw new Error("Invalid credentials");
-  },
-
-  async signup(password: string, email: string, name: string) {
-    console.log("Attempting signup with", { email, password, name });
-    // In a real stub, you might want to add the user to an in-memory array
-    const user = { id: "stub_user_id", email, name };
-    const accessToken = "stub_token";
-    localStorage.setItem("retro.access_token", accessToken);
-    localStorage.setItem("retro.user", JSON.stringify(user));
-    return {
-      success: true,
-      access_token: accessToken,
-      refresh_token: "stub_refresh_token",
-      user,
-    };
-  },
-
-  async logout(): Promise<{ success: boolean }> {
-    console.log("Logging out");
-    localStorage.removeItem("retro.access_token");
-    localStorage.removeItem("retro.user");
-    return { success: true };
-  },
-
-  async forgotPassword(email: string): Promise<{ success: boolean }> {
-    console.log("Forgot password for", email);
-    // Simulate sending a password reset email
-    return { success: true };
-  },
-
-  async resetPassword(password: string): Promise<{ success: boolean }> {
-    console.log("Resetting password to", password);
-    // Simulate resetting the password
-    return { success: true };
-  },
-
-  async verifyEmail() {
-    throw new Error("Method not implemented.");
-  },
-  async resendVerificationEmail() {
-    throw new Error("Method not implemented.");
   },
 };
 

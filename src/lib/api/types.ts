@@ -4,7 +4,7 @@ import { CalendarYear } from "@/types/calendar";
 import { Challenge, ChallengeEntry } from "@/types/challenges";
 import { Task } from "@/types/tasks";
 
-export interface StorageProvider {
+export interface ApiProvider {
   // calendar year
   getCalendarYear(year: number): Promise<CalendarYear | null>;
 
@@ -44,13 +44,13 @@ export interface StorageProvider {
   markChallengeNotDone(id: string, date: Date): Promise<{ success: boolean }>;
 
   // auth
-  login(name: string, password: string): Promise<LoginResponse>;
-  signup(password: string, email: string, name: string): Promise<LoginResponse>;
-  logout(): Promise<{ success: boolean }>;
-  forgotPassword(email: string): Promise<{ success: boolean }>;
-  resetPassword(password: string, token: string): Promise<{ success: boolean }>;
-  verifyEmail(token: string): Promise<{ success: boolean }>;
-  resendVerificationEmail(email: string): Promise<{ success: boolean }>;
+  // login(name: string, password: string): Promise<LoginResponse>;
+  // signup(password: string, email: string, name: string): Promise<LoginResponse>;
+  // logout(): Promise<{ success: boolean }>;
+  // forgotPassword(email: string): Promise<{ success: boolean }>;
+  // resetPassword(password: string, token: string): Promise<{ success: boolean }>;
+  // verifyEmail(token: string): Promise<{ success: boolean }>;
+  // resendVerificationEmail(email: string): Promise<{ success: boolean }>;
 }
 
 export interface LoginResponse {

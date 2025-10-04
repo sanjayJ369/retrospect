@@ -1,10 +1,10 @@
-import { getStorageProvider } from "@/lib/storage/StorageProvider";
+import { useAuth } from "@/context/auth-provider";
 import { ChallengeFormData } from "@/schemas/challenge-schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useCreateChallengeMutation = () => {
   const queryClient = useQueryClient();
-  const storage = getStorageProvider();
+  const { storage } = useAuth();
   return useMutation({
     mutationFn: (challenge: ChallengeFormData) =>
       storage.createChallenge(challenge),

@@ -1,12 +1,12 @@
 import { db } from "@/lib/db";
-import type { StorageProvider } from "./types";
+import type { ApiProvider } from "./types";
 import type { Task } from "@/types/tasks";
 import type { TaskFormData } from "@/schemas/task-schema";
 import type { CalendarYear } from "@/types/calendar";
 import type { Challenge, ChallengeEntry } from "@/types/challenges";
 import type { ChallengeFormData } from "@/schemas/challenge-schema";
 
-export const OfflineStorageProvider: StorageProvider = {
+export const OfflineApiProvider: ApiProvider = {
   async getCalendarYear(year: number): Promise<CalendarYear | null> {
     // Dexie doesn't directly support the complex query needed for a calendar.
     // This would need a more complex implementation, possibly denormalizing data.
@@ -139,27 +139,5 @@ export const OfflineStorageProvider: StorageProvider = {
       await db.challengeEntries.update(entry.id, { completed: false });
     }
     return { success: true };
-  },
-
-  async login() {
-    throw new Error("Method not implemented.");
-  },
-  async signup() {
-    throw new Error("Method not implemented.");
-  },
-  async logout() {
-    throw new Error("Method not implemented.");
-  },
-  async forgotPassword() {
-    throw new Error("Method not implemented.");
-  },
-  async resetPassword() {
-    throw new Error("Method not implemented.");
-  },
-  async verifyEmail() {
-    throw new Error("Method not implemented.");
-  },
-  async resendVerificationEmail() {
-    throw new Error("Method not implemented.");
   },
 };

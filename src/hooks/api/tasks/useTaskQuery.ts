@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStorageProvider } from "@/lib/storage/StorageProvider";
+import { useAuth } from "@/context/auth-provider";
 
 export function useTaskQuery(id: string) {
-  const storage = getStorageProvider();
+  const { storage } = useAuth();
 
   return useQuery({
     queryKey: ["tasks", id],

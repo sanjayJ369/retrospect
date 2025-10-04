@@ -1,8 +1,8 @@
-import { getStorageProvider } from "@/lib/storage/StorageProvider";
+import { useAuth } from "@/context/auth-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useDeleteChallengeMutation = () => {
-  const storage = getStorageProvider();
+  const { storage } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
