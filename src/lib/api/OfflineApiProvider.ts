@@ -34,7 +34,6 @@ export const OfflineApiProvider: ApiProvider = {
   },
 
   async createTask(task: TaskFormData) {
-    // Dexie's add will return the ID.
     const id = await db.tasks.add({
       ...task,
       description: task.description ?? "",

@@ -54,3 +54,8 @@ export async function apiFetch<T>(
   }
   return (await res.json()) as T;
 }
+
+export function todayDateString() {
+  const today = new Date();
+  return today.toISOString().slice(0, 10);
+}

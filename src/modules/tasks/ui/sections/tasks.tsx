@@ -5,9 +5,10 @@ import Container from "@/components/ui/8bit/container";
 import { useAllTaskQuery } from "@/hooks/api/tasks/useAllTasksQuery";
 import TaskCard from "../components/task-card";
 import { ScrollArea } from "@/components/ui/scroll";
+import { todayDateString } from "@/lib/utils";
 
 const Tasks = () => {
-  const date = Date.now().toString();
+  const date = todayDateString();
   const { data: tasks, isLoading, isError } = useAllTaskQuery(date);
   if (isLoading) {
     return <p>Loading...</p>;
@@ -20,7 +21,7 @@ const Tasks = () => {
   return (
     <Container className="w-full flex flex-col shadow-none border-none my-4 items-center">
       <CardHeader className="w-full">
-        <Container className="p-3">
+        <Container className="p-3 mb-3">
           <CardTitle
             className="font-bold text-xs sm:text-md md:text-xl flex items-center justify-between gap-2
               p-1"

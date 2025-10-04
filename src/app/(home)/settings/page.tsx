@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/8bit/card";
 import { Button } from "@/components/ui/8bit/button";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const SettingsPage = () => {
   const { user, logout } = useAuth();
@@ -31,9 +32,11 @@ const SettingsPage = () => {
           </CardHeader>
           <CardContent>
             <p>You need to be logged in to view settings.</p>
-            <Button asChild className="mt-4">
-              <a href="/auth/signin">Log in</a>
-            </Button>
+            <div className="mt-3">
+              <Link href="/auth/signin" passHref>
+                <Button variant="outline">Sign In</Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -80,9 +83,9 @@ const SettingsPage = () => {
             </p>
           </div>
           <div className="pt-4">
-            <Button variant="outline" asChild>
-              <a href="/auth/forgot-password">Change Password</a>
-            </Button>
+            <Link href="/auth/forgot-password" passHref>
+              <Button variant="outline">Change Password</Button>
+            </Link>
           </div>
           <div className="pt-4">
             <Button variant="destructive" onClick={logout}>
