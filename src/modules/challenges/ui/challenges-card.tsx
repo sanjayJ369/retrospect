@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/8bit/carousel";
 import Container from "@/components/ui/8bit/container";
 import ChallengesCardLoading from "./challenges-card-loading";
+import ChallengeNew from "../challenge-new";
 
 const ChallengesCard = () => {
   const [challenge, setChallenge] = useState<Challenge>();
@@ -59,23 +60,22 @@ const ChallengesCard = () => {
   return (
     <div className="w-full flex items-center justify-center my-4">
       <Container className="w-4/5 p-1 flex flex-col items-center justify-center">
-        <div className="h-full overflow-hidden flex flex-col my-3">
-          <div
-            className="flex flex-col items-center justify-center sm:flex-row sm:justify-between
-              sm:items-center gap-2 py-2"
-          >
-            <p className="font-bold text-sm sm:text-lg md:text-xl">
-              Challenges.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+        <div className="w-full h-full overflow-hidden flex flex-col my-1">
+          <div className="w-full p-3 my-1">
+            <div className="flex justify-between items-center mb-4">
+              <p className="font-bold text-sm sm:text-lg md:text-xl">
+                Challenges
+              </p>
+              <ChallengeNew />
+            </div>
+
+            <div className="flex justify-between items-center">
               <ChallengesDropDown
                 challenges={challenges!}
                 currChallenge={challenge}
                 setCurrChallenge={handleSetChallenge}
               />
-              <span className="px-4">
-                <ChallengesExpand challenge={challenge} />
-              </span>
+              <ChallengesExpand challenge={challenge} />
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
@@ -94,8 +94,12 @@ const ChallengesCard = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden sm:block m-2" />
-              <CarouselNext className="hidden sm:block m-2" />
+              {daysInMonths.size > 0 && (
+                <CarouselPrevious className="hidden sm:block m-2" />
+              )}
+              {daysInMonths.size > 0 && (
+                <CarouselNext className="hidden sm:block m-2" />
+              )}
             </Carousel>
           </div>
         </div>

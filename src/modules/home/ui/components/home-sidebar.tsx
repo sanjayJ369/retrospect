@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -83,6 +84,10 @@ const HomeSidebar = () => {
             </NavButton>
           ))}
         </SheetHeader>
+        <SheetDescription className="sr-only">
+          A sidebar menu to navigate to different pages like tasks, challenges,
+          and calendar.
+        </SheetDescription>
       </SheetContent>
     </Sheet>
   );

@@ -19,7 +19,7 @@ const CalendarMonthCard = ({ monthData, className }: CalendarMonthProps) => {
               <Container
                 className="p-3 flex-0 w-4 h-4 sm:w-auto sm:h-auto"
                 style={{
-                  backgroundColor: `rgba(120, 255, 120, ${1 - day.score * 0.01})`,
+                  backgroundColor: `rgba(120, 255, 120, ${day.score * 0.01})`,
                 }}
               >
                 <span className="hidden sm:block w-6 h-6 md:w-6 md:h-6 lg:w-8 text-center">

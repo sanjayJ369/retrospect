@@ -8,11 +8,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/8bit/carousel";
 import Container from "@/components/ui/8bit/container";
-import { useEffect, useState } from "react";
-import CalendarYear from "./calendar-year";
+import { useEffect, useMemo, useState } from "react";
 import CalendarMonth from "./calendar-month";
 import CalendarMonthCard from "./calendar-month-card";
 import { useCalendarYearQuery } from "@/hooks/api/calendar/useCalendarYearQuery";
+import { CalendarYear as CalendarYearType } from "@/types/calendar";
+import CalendarYear from "./calendar-year";
+
+function getDaysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
 
 const Calendar = () => {
   const today = new Date();
@@ -22,6 +27,41 @@ const Calendar = () => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
 
   const { data: yearData, isLoading, isError } = useCalendarYearQuery(year);
+
+  const normalizedYearData = useMemo<CalendarYearType>(() => {
+    const defaultData: CalendarYearType = {
+      year: year,
+      months: [],
+    };
+
+    for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+      const daysInMonth = getDaysInMonth(year, monthIndex);
+      const defaultDays = Array.from(
+        { length: daysInMonth },
+        (_, dayIndex) => ({
+          day: dayIndex + 1,
+          score: 0,
+        }),
+      );
+
+      defaultData.months.push({
+        month: monthIndex + 1,
+        days: defaultDays,
+      });
+    }
+
+    if (yearData?.months) {
+      const apiMonthsMap = new Map(yearData.months.map((m) => [m.month, m]));
+
+      defaultData.months.forEach((defaultMonth, index) => {
+        if (apiMonthsMap.has(defaultMonth.month)) {
+          defaultData.months[index] = apiMonthsMap.get(defaultMonth.month)!;
+        }
+      });
+    }
+
+    return defaultData;
+  }, [year, yearData]);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -38,39 +78,30 @@ const Calendar = () => {
   }, [carouselApi]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError || !yearData) return <p>Error...</p>;
-
-  const months = Array.from({ length: 12 }, (_, i) => i);
+  if (isError) return <p>Error...</p>;
 
   return (
     <div className="w-full flex items-center justify-center my-4">
       <Container className="w-4/5 p-1 flex flex-col items-center justify-center">
         <div className="w-4/5 py-3 flex items-center justify-between">
           <CalendarYear setYear={setYear} year={year} />
-
           <CalendarMonth
-            setMonth={(m) => {
-              if (carouselApi) {
-                carouselApi.scrollTo(m);
-              }
-            }}
+            setMonth={(m) => carouselApi?.scrollTo(m)}
             month={month}
           />
         </div>
 
         <div className="w-full flex items-center justify-center">
           <Carousel
-            opts={{
-              startIndex: today.getMonth(),
-            }}
-            setApi={(api) => setCarouselApi(api)}
+            opts={{ startIndex: month }}
+            setApi={setCarouselApi}
             className="h-full w-full md:w-4/5"
           >
-            <CarouselContent className="h-full">
-              {months.map((m) => (
-                <CarouselItem key={m} className="h-full">
-                  <div className="p-1 sm:p-2 md:p-3 h-full">
-                    <CalendarMonthCard monthData={yearData.months[m]} />
+            <CarouselContent className="h-full transition-transform duration-300 ease-in-out">
+              {normalizedYearData.months.map((monthData, index) => (
+                <CarouselItem key={index} className="h-full">
+                  <div className="p-1 sm:p-2 md:p-3 h-full m-3">
+                    <CalendarMonthCard monthData={monthData} />
                   </div>
                 </CarouselItem>
               ))}

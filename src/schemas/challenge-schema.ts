@@ -5,9 +5,9 @@ export const challengeSchema = z
     title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
     startDate: z.date(),
-    endDate: z.date(),
+    endDate: z.date().nullable().optional(),
   })
-  .refine((data) => data.startDate < data.endDate, {
+  .refine((data) => !data.endDate || data.startDate < data.endDate, {
     message: "Start date must be before end date",
     path: ["endDate"],
   });
