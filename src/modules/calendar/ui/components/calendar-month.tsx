@@ -1,62 +1,56 @@
-"use client";
 import { Button } from "@/components/ui/8bit/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/8bit/dropdown-menu";
 import { memo } from "react";
 
 interface CalendarMonthProps {
-  setMonth: (year: number) => void;
+  setMonth: (monthIndex: number) => void;
   month: number;
+  months?: Date[];
 }
 
-const CalendarMonth = ({ setMonth, month }: CalendarMonthProps) => {
-  // const { play } = useSound("/click.mp3");
-  // const [pressed, setPressed] = useState(false);
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
-  // const handleClick = async (open: boolean) => {
-  //   if (open) {
-  //     setPressed(true);
-  //     await play();
-  //     setPressed(false);
-  //   } else {
-  //     setPressed(false);
-  //   }
-  // };
-
-  const monthNames = new Map([
-    [0, "jan"],
-    [1, "feb"],
-    [2, "mar"],
-    [3, "apr"],
-    [4, "may"],
-    [5, "jun"],
-    [6, "jul"],
-    [7, "aug"],
-    [8, "sep"],
-    [9, "oct"],
-    [10, "nov"],
-    [11, "dec"],
-  ]);
+const CalendarMonth = ({ setMonth, month, months }: CalendarMonthProps) => {
+  const monthOptions = months
+    ? months.map((date) => ({
+        index: date.getMonth(),
+        name: monthNames[date.getMonth()],
+      }))
+    : monthNames.map((name, index) => ({ index, name }));
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="w-2/5">
         <Button variant="outline" className="text-xs sm:text-sm md:text-base">
-          {monthNames.get(month)}
+          {monthNames[month]}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="text-xs rounded-none overflow-clip">
-        {Array.from(monthNames.entries()).map(([k, v]) => (
+        {monthOptions.map(({ index, name }) => (
           <DropdownMenuItem
-            key={k}
-            onSelect={() => setMonth(k)}
+            key={index}
+            onSelect={() => setMonth(index)}
             className="text-xs sm:text-sm md:text-md xl:text-xl"
           >
-            {v}
+            {name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

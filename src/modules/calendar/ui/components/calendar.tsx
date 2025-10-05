@@ -100,7 +100,7 @@ const Calendar = () => {
             <CarouselContent className="h-full transition-transform duration-300 ease-in-out">
               {normalizedYearData.months.map((monthData, index) => (
                 <CarouselItem key={index} className="h-full">
-                  <div className="p-1 sm:p-2 md:p-3 h-full m-3">
+                  <div className="p-1 sm:p-2 md:p-3 h-full ml-2">
                     <CalendarMonthCard monthData={monthData} />
                   </div>
                 </CarouselItem>

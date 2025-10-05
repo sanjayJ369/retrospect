@@ -6,10 +6,29 @@ export const challengeSchema = z
     description: z.string().optional(),
     startDate: z.date(),
     endDate: z.date().nullable().optional(),
+
+    duration: z.preprocess((val) => {
+      return isNaN(val as number) ? undefined : val;
+    }, z.number().min(1, "Duration must be at least 1 day").optional()),
+
+    isLimitless: z.boolean(),
   })
-  .refine((data) => !data.endDate || data.startDate < data.endDate, {
-    message: "Start date must be before end date",
-    path: ["endDate"],
+  .superRefine((data, ctx) => {
+    if (!data.isLimitless && !data.endDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "An end date is required unless the challenge is limitless.",
+        path: ["endDate"],
+      });
+    }
+
+    if (data.endDate && data.startDate > data.endDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Start date must be before the end date.",
+        path: ["endDate"],
+      });
+    }
   });
 
 export type ChallengeFormData = z.infer<typeof challengeSchema>;

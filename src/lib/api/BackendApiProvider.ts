@@ -6,6 +6,45 @@ import type { ChallengeFormData } from "@/schemas/challenge-schema";
 import { apiFetch } from "../utils";
 import { ApiProvider } from "./types";
 
+// A new interface to represent the raw data from the backend
+interface BackendTask {
+  id: string;
+  title: string;
+  description: string;
+  duration: string; // e.g., "00:45:00" from PostgreSQL interval
+  completed: boolean;
+  // any other fields from the backend...
+}
+
+// Converts a backend interval string ("HH:MM:SS") to minutes
+function intervalToMinutes(interval: string): number {
+  if (!interval) return 0;
+  const parts = interval.split(":").map(Number);
+  let minutes = 0;
+  if (parts.length === 3) {
+    minutes = parts[0] * 60 + parts[1] + parts[2] / 60;
+  } else if (parts.length === 2) {
+    minutes = parts[0] + parts[1] / 60;
+  }
+  return Math.round(minutes);
+}
+
+function minutesToInterval(minutes: number): string {
+  if (!minutes) return "0 minutes";
+  return `${minutes} minutes`;
+}
+
+export function mapBackendToFrontendTask(backendTask: BackendTask): Task {
+  return {
+    id: backendTask.id,
+    title: backendTask.title,
+    description: backendTask.description,
+    duration: intervalToMinutes(backendTask.duration),
+    date: undefined,
+    done: backendTask.completed,
+  };
+}
+
 function getCurrentUserId(): string | null {
   if (typeof window === "undefined") return null;
   try {
@@ -34,8 +73,60 @@ export const BackendApiProvider: ApiProvider = {
   },
 
   async getTask(id: string): Promise<Task | null> {
-    const data = await apiFetch<Task>(`/tasks/${id}`, { method: "GET" });
-    return data;
+    const data = await apiFetch<BackendTask>(`/tasks/${id}`, { method: "GET" });
+    if (!data) return null;
+    // ✅ Translate before returning
+    return mapBackendToFrontendTask(data);
+  },
+
+  async getAllTasks(date: string): Promise<Task[]> {
+    const userId = getCurrentUserId();
+    if (!userId) return []; // Return empty array for consistency
+
+    const data = await apiFetch<BackendTask[]>(
+      `/users/${userId}/tasks?date=${date}`,
+      {
+        method: "GET",
+      },
+    );
+    // ✅ Translate each item in the array
+    return data.map(mapBackendToFrontendTask);
+  },
+
+  async createTask(
+    task: TaskFormData,
+  ): Promise<{ task: Task; success: boolean }> {
+    const userId = getCurrentUserId();
+    if (!userId) throw new Error("User ID not found");
+
+    // ✅ Translate the outgoing data to match the backend's expected shape
+    const payload = {
+      title: task.title,
+      description: task.description,
+      duration: minutesToInterval(task.duration || 0), // Convert number to interval string
+      // `completed` is not needed here as it defaults to false on the backend
+    };
+
+    const data = await apiFetch<BackendTask>(`/users/${userId}/tasks`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    // ✅ Translate the returned data back to the frontend shape
+    return { task: mapBackendToFrontendTask(data), success: true };
+  },
+
+  async setTaskDone(
+    id: string,
+    done: boolean,
+  ): Promise<{ task: Task; success: boolean }> {
+    const data = await apiFetch<BackendTask>(`/tasks/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: done }),
+    });
+    return { task: mapBackendToFrontendTask(data), success: true };
   },
 
   async deleteTask(id: string): Promise<{ id: string; success: boolean }> {
@@ -48,42 +139,6 @@ export const BackendApiProvider: ApiProvider = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
-    });
-    return { task: data, success: true };
-  },
-
-  async createTask(task: TaskFormData) {
-    const userId = getCurrentUserId();
-    if (!userId) {
-      throw new Error("User ID not found");
-    }
-    const data = await apiFetch<Task>(`/users/${userId}/tasks`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(task),
-    });
-    return { task: data, success: true };
-  },
-
-  async getAllTasks(date: string) {
-    const userId = getCurrentUserId();
-    if (!userId) {
-      throw new Error("User ID not found");
-    }
-    const data = await apiFetch<Task[]>(`/users/${userId}/tasks?date=${date}`, {
-      method: "GET",
-    });
-    return data;
-  },
-
-  async setTaskDone(
-    id: string,
-    done: boolean,
-  ): Promise<{ task: Task; success: boolean }> {
-    const data = await apiFetch<Task>(`/tasks/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done }),
     });
     return { task: data, success: true };
   },
@@ -133,7 +188,7 @@ export const BackendApiProvider: ApiProvider = {
       name: challenge.title,
       description: challenge.description,
       start_date: challenge.startDate.toISOString().slice(0, 10),
-      end_date: challenge.endDate.toISOString().slice(0, 10),
+      end_date: challenge.endDate?.toISOString().slice(0, 10),
     };
     const created = await apiFetch<Challenge>(`/challenges`, {
       method: "POST",
@@ -148,7 +203,7 @@ export const BackendApiProvider: ApiProvider = {
       name: challenge.title,
       description: challenge.description,
       start_date: challenge.startDate.toISOString().slice(0, 10),
-      end_date: challenge.endDate.toISOString().slice(0, 10),
+      end_date: challenge.endDate?.toISOString().slice(0, 10),
     };
     const updated = await apiFetch<Challenge>(`/challenges/${id}`, {
       method: "PATCH",

@@ -9,10 +9,10 @@ export class RetrospectDB extends Dexie {
 
   constructor() {
     super("retrospect");
-    this.version(1).stores({
-      tasks: "++id, done, title, description, duration",
-      challenges: "++id, title, description, duration, startDate, endDate",
-      challengeEntries: "++id, challengeId, date, done",
+    this.version(2).stores({
+      tasks: "++id, date, done, title",
+      challenges: "++id, title, startDate, endDate",
+      challengeEntries: "++id, &[challengeId+date], challengeId",
     });
   }
 }

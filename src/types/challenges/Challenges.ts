@@ -6,10 +6,10 @@ export interface ChallengeEntry {
 }
 
 export interface Challenge {
-  id: string; // uuid
+  id: string;
   title: string;
   description: string;
   startDate: Date;
-  endDate: Date;
+  endDate: Date | null;
   duration: number;
 }
