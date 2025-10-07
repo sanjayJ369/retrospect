@@ -177,9 +177,12 @@ export const OfflineApiProvider: ApiProvider = {
       .where({ challengeId })
       .and((e) => startOfDay(e.date).getTime() === dayStart.getTime())
       .first();
+
     if (entry) {
       await db.challengeEntries.update(entry.id!, { completed });
       const updatedEntry = await db.challengeEntries.get(entry.id!);
+
+      console.log("updating entry:", updatedEntry);
       return { success: true, entry: updatedEntry! };
     }
     const newEntry: Omit<ChallengeEntry, "id"> = {

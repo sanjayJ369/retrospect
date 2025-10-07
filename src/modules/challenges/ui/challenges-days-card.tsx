@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/8bit/checkbox";
 
 export type DayState = {
+  id?: string;
   date: Date;
   status: "completed" | "not-completed" | "future" | "disabled";
   isToday: boolean;
@@ -11,10 +12,15 @@ export type DayState = {
 
 interface ChallengeDaysCardProps {
   days: DayState[];
-  onToggleDay?: (date: Date, completed: boolean) => void;
+  onToggleDay: (date: Date, completed: boolean) => void;
+  isMutating: boolean;
 }
 
-const ChallengeDaysCard = ({ days, onToggleDay }: ChallengeDaysCardProps) => {
+const ChallengeDaysCard = ({
+  days,
+  onToggleDay,
+  isMutating,
+}: ChallengeDaysCardProps) => {
   if (!days || days.length === 0) {
     return (
       <Card
@@ -26,7 +32,6 @@ const ChallengeDaysCard = ({ days, onToggleDay }: ChallengeDaysCardProps) => {
   }
 
   const firstDayOfMonth = days[0].date.getDay(); // Sunday = 0
-
   return (
     <Card>
       <div className="grid grid-cols-7 gap-1">
@@ -50,28 +55,35 @@ const ChallengeDaysCard = ({ days, onToggleDay }: ChallengeDaysCardProps) => {
               key={day.date.toISOString()}
               className="flex items-center justify-center"
             >
-              <Container
-                className={cn(
-                  "p-3 flex-0 w-4 h-4 sm:w-auto sm:h-auto flex items-center justify-center",
-                  dayStyles,
-                )}
-              >
-                {day.isToday && onToggleDay ? (
-                  <Checkbox
-                    className="size-6 checkbox"
-                    checked={day.status === "completed"}
-                    onCheckedChange={(checked) =>
-                      onToggleDay(day.date, !!checked)
-                    }
-                  />
-                ) : (
-                  <>
+              {day.isToday && onToggleDay ? (
+                <>
+                  <Container>
+                    <Checkbox
+                      className="size-10"
+                      checked={day.status === "completed"}
+                      disabled={isMutating}
+                      onCheckedChange={(checked) => {
+                        if (onToggleDay) {
+                          onToggleDay(day.date, !!checked);
+                        }
+                      }}
+                    />
+                  </Container>
+                </>
+              ) : (
+                <>
+                  <Container
+                    className={cn(
+                      "p-3 flex-0 w-4 h-4 sm:w-auto sm:h-auto flex items-center justify-center",
+                      dayStyles,
+                    )}
+                  >
                     <span className="hidden sm:block w-6 h-6 text-center leading-6">
                       {day.date.getDate()}
                     </span>
-                  </>
-                )}
-              </Container>
+                  </Container>
+                </>
+              )}
             </div>
           );
         })}

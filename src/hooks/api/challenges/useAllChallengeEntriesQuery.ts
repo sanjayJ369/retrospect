@@ -5,7 +5,7 @@ export function useAllChallengeEntriesQuery(id: string) {
   const { storage } = useAuth();
 
   return useQuery({
-    queryKey: ["challenges", id],
+    queryKey: ["challengeEntries", id],
     queryFn: () => storage.getChallengeEntries(id),
     enabled: !!id,
   });

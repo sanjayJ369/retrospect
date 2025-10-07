@@ -20,6 +20,7 @@ import ChallengeDaysCard, { DayState } from "./challenges-days-card";
 import { isSameDay, isFuture } from "date-fns";
 import CalendarYear from "@/modules/calendar/ui/components/calendar-year";
 import CalendarMonth from "@/modules/calendar/ui/components/calendar-month";
+import useChallengeEntryDoneToggleMutation from "@/hooks/api/challenges/useChallengeEntryDoneMutation";
 
 // Helper function to get the number of days in a given month and year
 function getDaysInMonth(year: number, month: number): number {
@@ -36,6 +37,19 @@ const ChallengesCard = () => {
   // Single source of truth for the carousel's position
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
 
+  const { mutate: toggleDay, isPending } =
+    useChallengeEntryDoneToggleMutation();
+
+  const handleToggleDay = (date: Date, completed: boolean) => {
+    if (!challenge) return; // Make sure a challenge is selected
+
+    // Call the mutation with the correct `challengeId`
+    toggleDay({
+      id: challenge.id,
+      date: date,
+      done: completed,
+    });
+  };
   // --- Data Fetching ---
   const { data: challenges, isLoading, isError } = useAllChallengesQuery();
   const { data: entries } = useAllChallengeEntriesQuery(challenge?.id || "");
@@ -72,7 +86,7 @@ const ChallengesCard = () => {
     const end = challenge.endDate;
     const years = new Set<number>();
     const months: Date[] = [];
-    let current = new Date(start.getFullYear(), start.getMonth(), 1);
+    const current = new Date(start.getFullYear(), start.getMonth(), 1);
     while (current <= end) {
       years.add(current.getFullYear());
       months.push(new Date(current));
@@ -102,7 +116,8 @@ const ChallengesCard = () => {
 
         let status: DayState["status"] = "disabled";
         const isWithinRange =
-          date >= challenge.startDate &&
+          (date >= challenge.startDate ||
+            isSameDay(date, challenge.startDate)) &&
           (!challenge.endDate || date <= challenge.endDate);
 
         if (isWithinRange) {
@@ -115,7 +130,12 @@ const ChallengesCard = () => {
                 : "not-completed";
           }
         }
-        monthDays.push({ date, status, isToday: isSameDay(date, today) });
+        monthDays.push({
+          date,
+          status,
+          isToday: isSameDay(date, today),
+          id: entry?.id,
+        });
       }
       return monthDays;
     });
@@ -218,7 +238,11 @@ const ChallengesCard = () => {
                 {validMonths.map((date, index) => (
                   <CarouselItem key={date.toISOString()} className="h-full">
                     <div className="p-1 sm:p-2 md:p-3 h-full ml-2">
-                      <ChallengeDaysCard days={normalizedMonths[index]} />
+                      <ChallengeDaysCard
+                        days={normalizedMonths[index]}
+                        onToggleDay={handleToggleDay}
+                        isMutating={isPending}
+                      />
                     </div>
                   </CarouselItem>
                 ))}
