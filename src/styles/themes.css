@@ -1,69 +1,109 @@
-/* --- Default Theme (Your Original) --- */
 .theme-default {
-  --radius: 0.625rem;
-  --background: #fdf6e3;
-  --foreground: #2d1e2f;
-  --card: #fcf5ed;
-  --card-foreground: #2d1e2f;
-  --popover: #fff8f2;
+  --background: #fdf6e3; /* Warm ivory */
+  --foreground: #2d1e2f; /* Deep plum for legibility */
+
+  --card: #fcf5ed; /* Dusty cream */
+  --card-foreground: #2d1e2f; /* Maintain contrast */
+
+  --popover: #fff8f2; /* Ultra‑light cream */
   --popover-foreground: #2d1e2f;
-  --primary: #d98a78;
-  --primary-foreground: #fdf6e3;
-  --secondary: #b8c9a5;
-  --secondary-foreground: #2d1e2f;
-  --muted: #fef9ef;
+
+  --primary: #d98a78; /* Soft rust */
+  --primary-foreground: #fdf6e3; /* Ivory text */
+
+  --secondary: #b8c9a5; /* Gentle sage/teal */
+  --secondary-foreground: #2d1e2f; /* Plum text */
+
+  --muted: #fef9ef; /* Faint ivory */
   --muted-foreground: rgba(45, 30, 47, 0.5);
-  --accent: #e9edc9;
-  --accent-foreground: #2d1e2f;
-  --destructive: #a63d40;
+
+  --accent: #e9edc9; /* Pale chartreuse */
+  --accent-foreground: #2d1e2f; /* Plum text */
+
+  --destructive: #a63d40; /* Deep rust */
   --destructive-foreground: #fdf6e3;
+
   --border: rgba(45, 30, 47, 0.15);
   --input: #fff8f2;
-  --ring: #d98a78;
-  --chart-1: #d98a78;
-  --chart-2: #b8c9a5;
-  --chart-3: #fdf6e3;
-  --chart-4: #e9edc9;
-  --chart-5: #a63d40;
+  --ring: #d98a78; /* Rust ring for focus */
+
+  --chart-1: #d98a78; /* Rust */
+  --chart-2: #b8c9a5; /* Sage/teal */
+  --chart-3: #fdf6e3; /* Ivory */
+  --chart-4: #e9edc9; /* Pale chartreuse */
+  --chart-5: #a63d40; /* Deep rust */
+
+  --sidebar: #fcf5ed;
+  --sidebar-foreground: #2d1e2f;
+  --sidebar-primary: #d98a78;
+  --sidebar-primary-foreground: #fdf6e3;
+  --sidebar-accent: #e9edc9;
+  --sidebar-accent-foreground: #2d1e2f;
+  --sidebar-border: rgba(45, 30, 47, 0.2);
+  --sidebar-ring: #b8c9a5;
+  --color-screen: #a4b465;
 }
-.dark .theme-default {
+.dark.theme-default {
   --background: #181414;
   --foreground: #eeeeee;
+
   --card: #222222;
   --card-foreground: #eeeeee;
+
   --popover: #333333;
   --popover-foreground: #eeeeee;
+
   --primary: #36b2ff;
   --primary-foreground: #ffffff;
-  --secondary: #eeeeee;
+
+  --secondary: #eeeeee; /* Light Gray */
   --secondary-foreground: #000000;
+
   --muted: #555555;
   --muted-foreground: #aaaaaa;
-  --accent: #808000;
+
+  --accent: #808000; /* Olive (Darker, Muted) */
   --accent-foreground: #ffffff;
+
   --destructive: #d20f39;
   --destructive-foreground: #ffffff;
-  --border: #808000;
+
+  --border: #808000; /* Olive (Used as Border) */
   --input: #333333;
-  --ring: #808000;
+  --ring: #808000; /* Olive (Focus Ring) */
+
   --chart-1: #ff4136;
   --chart-2: #eeeeee;
   --chart-3: #aaaaaa;
   --chart-4: #0074d9;
   --chart-5: #555555;
+
+  --sidebar: #222222;
+  --sidebar-foreground: #eeeeee;
+
+  --sidebar-primary: #36ffa1;
+  --sidebar-primary-foreground: #ffffff;
+
+  --sidebar-accent: #808000; /* Olive */
+  --sidebar-accent-foreground: #ffffff;
+
+  --sidebar-border: #808000; /* Olive */
+  --sidebar-ring: #808000; /* Olive */
+
+  --color-screen: #38b764; /* Classic Green */
 }
 
 /* --- Game Boy Theme --- */
 .theme-gameboy {
   --radius: 0rem;
-  --primary: oklch(0.7 0.2 120);
-  --primary-foreground: oklch(0.2 0.1 140);
   --background: oklch(0.8 0.2 140);
   --foreground: oklch(0.2 0.1 140);
   --card: oklch(0.8 0.2 140);
   --card-foreground: oklch(0.2 0.1 140);
   --popover: oklch(0.8 0.2 140);
   --popover-foreground: oklch(0.2 0.1 140);
+  --primary: oklch(0.7 0.2 120);
+  --primary-foreground: oklch(0.2 0.1 140);
   --secondary: oklch(0.7 0.2 120);
   --secondary-foreground: oklch(0.2 0.1 140);
   --muted: oklch(0.7 0.2 120);
@@ -77,18 +117,29 @@
   --chart-1: oklch(0.4 0.2 140);
   --chart-2: oklch(0.3 0.2 140);
   --chart-3: oklch(0.4 0.2 140);
-  --chart-4: oklch(0.4 0.2 140);
+  --chart-4: oklch(0.3 0.2 140);
   --chart-5: oklch(0.4 0.2 140);
+  /* --- Added Variables --- */
+  --destructive-foreground: oklch(0.8 0.2 120);
+  --sidebar: oklch(0.8 0.2 140);
+  --sidebar-foreground: oklch(0.2 0.1 140);
+  --sidebar-primary: oklch(0.7 0.2 120);
+  --sidebar-primary-foreground: oklch(0.2 0.1 140);
+  --sidebar-accent: oklch(0.3 0.2 140);
+  --sidebar-accent-foreground: oklch(0.8 0.2 120);
+  --sidebar-border: oklch(0.4 0.2 140);
+  --sidebar-ring: oklch(0.8 0.2 120);
+  --color-screen: #a4b465;
 }
-.dark .theme-gameboy {
-  --primary: oklch(0.7 0.2 120);
-  --primary-foreground: oklch(0.2 0.1 140);
+.dark.theme-gameboy {
   --background: oklch(0.2 0.1 140);
   --foreground: oklch(0.8 0.2 120);
   --card: oklch(0.2 0.1 140);
   --card-foreground: oklch(0.8 0.2 120);
   --popover: oklch(0.2 0.1 140);
   --popover-foreground: oklch(0.8 0.2 120);
+  --primary: oklch(0.7 0.2 120);
+  --primary-foreground: oklch(0.2 0.1 140);
   --secondary: oklch(0.3 0.1 140);
   --secondary-foreground: oklch(0.8 0.2 120);
   --muted: oklch(0.3 0.1 140);
@@ -102,21 +153,32 @@
   --chart-1: oklch(0.4 0.2 140);
   --chart-2: oklch(0.3 0.2 140);
   --chart-3: oklch(0.4 0.2 140);
-  --chart-4: oklch(0.4 0.2 140);
+  --chart-4: oklch(0.3 0.2 140);
   --chart-5: oklch(0.4 0.2 140);
+  /* --- Added Variables --- */
+  --destructive-foreground: oklch(0.8 0.2 120);
+  --sidebar: oklch(0.2 0.1 140);
+  --sidebar-foreground: oklch(0.8 0.2 120);
+  --sidebar-primary: oklch(0.7 0.2 120);
+  --sidebar-primary-foreground: oklch(0.2 0.1 140);
+  --sidebar-accent: oklch(0.4 0.2 140);
+  --sidebar-accent-foreground: oklch(0.8 0.2 120);
+  --sidebar-border: oklch(0.4 0.2 140);
+  --sidebar-ring: oklch(0.8 0.2 120);
+  --color-screen: #38b764;
 }
 
 /* --- Sega Theme --- */
 .theme-sega {
   --radius: 0rem;
-  --primary: oklch(0.5 0.2 260);
-  --primary-foreground: oklch(0.9 0.02 260);
   --background: oklch(0.85 0.1 220);
   --foreground: oklch(0.1 0.1 280);
   --card: oklch(0.85 0.1 220);
   --card-foreground: oklch(0.1 0.1 280);
   --popover: oklch(0.85 0.1 220);
   --popover-foreground: oklch(0.1 0.1 280);
+  --primary: oklch(0.5 0.2 260);
+  --primary-foreground: oklch(0.9 0.02 260);
   --secondary: oklch(0.5 0.2 260);
   --secondary-foreground: oklch(0.1 0.1 280);
   --muted: oklch(0.1 0.1 280);
@@ -132,16 +194,27 @@
   --chart-3: oklch(0.7 0.1 250);
   --chart-4: oklch(0.6 0.15 250);
   --chart-5: oklch(0.4 0.15 250);
+  /* --- Added Variables --- */
+  --destructive-foreground: oklch(0.9 0.02 260);
+  --sidebar: oklch(0.85 0.1 220);
+  --sidebar-foreground: oklch(0.1 0.1 280);
+  --sidebar-primary: oklch(0.5 0.2 260);
+  --sidebar-primary-foreground: oklch(0.9 0.02 260);
+  --sidebar-accent: oklch(0.6 0.2 20);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.5 0.2 260);
+  --sidebar-ring: oklch(0.5 0.2 260);
+  --color-screen: oklch(0.8 0.05 240);
 }
-.dark .theme-sega {
-  --primary: oklch(0.5 0.2 260);
-  --primary-foreground: oklch(0.9 0.02 260);
+.dark.theme-sega {
   --background: oklch(0.1 0.1 280);
   --foreground: oklch(0.9 0.02 260);
   --card: oklch(0.1 0.1 280);
   --card-foreground: oklch(0.9 0.02 260);
   --popover: oklch(0.1 0.1 280);
   --popover-foreground: oklch(0.9 0.02 260);
+  --primary: oklch(0.5 0.2 260);
+  --primary-foreground: oklch(0.9 0.02 260);
   --secondary: oklch(0.5 0.2 260);
   --secondary-foreground: oklch(0.9 0.02 260);
   --muted: oklch(0.5 0.2 260);
@@ -157,4 +230,15 @@
   --chart-3: oklch(0.5 0.2 280);
   --chart-4: oklch(0.4 0.2 250);
   --chart-5: oklch(0.4 0.15 250);
+  /* --- Added Variables --- */
+  --destructive-foreground: oklch(0.9 0.02 260);
+  --sidebar: oklch(0.1 0.1 280);
+  --sidebar-foreground: oklch(0.9 0.02 260);
+  --sidebar-primary: oklch(0.5 0.2 260);
+  --sidebar-primary-foreground: oklch(0.9 0.02 260);
+  --sidebar-accent: oklch(0.5 0.2 20);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.5 0.2 260);
+  --sidebar-ring: oklch(0.5 0.2 260);
+  --color-screen: oklch(0.2 0.05 260);
 }

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/8bit/button";
 import {
@@ -12,9 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/8bit/dropdown-menu";
 import { useSound } from "@/hooks/useSound";
+import { useTheme } from "@/context/custom-theme-provider";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { setColorMode } = useTheme();
   const switchSound = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
@@ -23,7 +23,7 @@ export function ModeToggle() {
   const { play } = useSound("/light-switch.mp3");
   const handleThemeChange = async (theme: string) => {
     await play();
-    setTheme(theme);
+    setColorMode(theme);
   };
 
   return (

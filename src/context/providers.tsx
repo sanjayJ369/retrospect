@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AuthProvider } from "@/context/auth-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { seedDailyData } from "@/lib/data-seeder";
+import { AppThemeProvider } from "./custom-theme-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,15 +18,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <AppThemeProvider>
           {children}
           <ReactQueryDevtools initialIsOpen={false} />
-        </ThemeProvider>
+        </AppThemeProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
