@@ -34,7 +34,8 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body
-        className={`${pressStart.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${pressStart.className} ${geistSans.variable} ${geistMono.variable} antialiased
+          retro-full-crt retro-pixel-grid`}
       >
         <Providers>{children}</Providers>
       </body>
