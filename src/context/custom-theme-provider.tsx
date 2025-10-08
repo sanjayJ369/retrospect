@@ -14,6 +14,12 @@ export const baseThemes = [
   "atari",
   "nintendo",
   "arcade",
+  "neogeo",
+  "soft-pop",
+  "pacman",
+  "vhs",
+  "cassette",
+  "rusty-byte",
 ];
 
 interface CustomThemeContextType {
