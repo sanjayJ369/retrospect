@@ -21,6 +21,7 @@ import { isSameDay, isFuture } from "date-fns";
 import CalendarYear from "@/modules/calendar/ui/components/calendar-year";
 import CalendarMonth from "@/modules/calendar/ui/components/calendar-month";
 import useChallengeEntryDoneToggleMutation from "@/hooks/api/challenges/useChallengeEntryDoneMutation";
+import ChallengeMutate from "./challenge-mutate";
 
 // Helper function to get the number of days in a given month and year
 function getDaysInMonth(year: number, month: number): number {
@@ -90,9 +91,7 @@ const ChallengesCard = () => {
       return { validYears: yearRange, validMonthsForViewYear: months };
     }
 
-    // Finite challenge
     const years = getYearRange(challenge.startDate, challenge.endDate);
-    // ✅ THE FIX: Use the state `viewDate.getFullYear()` instead of a hardcoded year
     const months = getValidMonthsForYear(
       viewDate.getFullYear(),
       challenge.startDate,
@@ -201,7 +200,10 @@ const ChallengesCard = () => {
               <p className="font-bold text-sm sm:text-lg md:text-xl">
                 Challenges
               </p>
-              <ChallengeNew />
+              <div className="flex gap-5">
+                <ChallengeNew />
+                {challenge && <ChallengeMutate id={challenge.id} />}
+              </div>
             </div>
             <div className="flex justify-between items-center mb-4">
               <ChallengesDropDown

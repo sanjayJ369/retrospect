@@ -35,7 +35,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${pressStart.className} ${geistSans.variable} ${geistMono.variable} antialiased
-          retro-full-crt retro-pixel-grid`}
+          retro-full-crt retro-scanlines`}
       >
         <Providers>{children}</Providers>
       </body>

@@ -126,7 +126,7 @@ export const OfflineApiProvider: ApiProvider = {
       endDate: challengeData.endDate || null, // Ensure null is saved
       duration,
     };
-    const id = await db.challenges.add(newRecord as Challenge);
+    const id = await db.challenges.add(newRecord as unknown as Challenge);
     const newChallenge = await db.challenges.get(id);
     if (!newChallenge)
       throw new Error("Failed to create challenge in local DB");

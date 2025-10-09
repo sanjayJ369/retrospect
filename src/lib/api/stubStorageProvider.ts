@@ -5,10 +5,12 @@ import type {
   CalendarMonth,
   CalendarDay,
 } from "@/types/calendar";
-import type { TaskFormData } from "@/schemas/task-schema";
+import type { TaskFormData as OriginalTaskFormData } from "@/schemas/task-schema";
 import type { ChallengeFormData } from "@/schemas/challenge-schema";
 import { Challenge, ChallengeEntry } from "@/types/challenges";
 import { dateRange } from "../utils";
+
+type TaskFormData = OriginalTaskFormData & { date: Date };
 import { differenceInDays } from "date-fns";
 
 const tasks: Task[] = [];
@@ -66,6 +68,7 @@ const initialChallenges: Challenge[] = [
 challenges = [...initialChallenges];
 // Initialize completions for each challenge
 initialChallenges.forEach((challenge) => {
+  if (!challenge.startDate || !challenge.endDate) return;
   const entries = dateRange(challenge.startDate, challenge.endDate);
   completetions.set(challenge.id, new Map());
 
@@ -124,6 +127,7 @@ export const StubApiProvider: ApiProvider = {
       title: data.title,
       description: data.description ?? "",
       duration: data.duration ?? 0,
+      date: data.date,
     };
     tasks.push(newTask);
     return { task: newTask, success: true };
@@ -180,13 +184,19 @@ export const StubApiProvider: ApiProvider = {
       id: genId(),
       title: challengeData.title,
       description: challengeData.description || "",
-      startDate: challengeData.startDate,
-      endDate: challengeData.endDate,
-      duration: getDuration(challengeData.startDate, challengeData.endDate),
+      startDate: challengeData.startDate ?? null,
+      endDate: challengeData.endDate ?? null,
+      duration: getDuration(
+        challengeData.startDate ?? new Date(),
+        challengeData.endDate ?? new Date(),
+      ),
     };
 
     challenges.push(newChallenge);
-    const entries = dateRange(newChallenge.startDate, newChallenge.endDate);
+    const entries = dateRange(
+      newChallenge.startDate ?? new Date(),
+      newChallenge.endDate ?? new Date(),
+    );
     completetions.set(newChallenge.id, new Map());
     entries.forEach((entry) => {
       completetions.get(newChallenge.id)?.set(entry, {
@@ -228,10 +238,13 @@ export const StubApiProvider: ApiProvider = {
       ...oldChallenge,
       title: challengeData.title,
       description: challengeData.description ?? "",
-      startDate: challengeData.startDate,
-      endDate: challengeData.endDate,
+      startDate: challengeData.startDate ?? null,
+      endDate: challengeData.endDate ?? null,
       duration:
-        differenceInDays(challengeData.endDate, challengeData.startDate) + 1,
+        differenceInDays(
+          challengeData.endDate ?? new Date(),
+          challengeData.startDate ?? new Date(),
+        ) + 1,
     };
     challenges[challengeIndex] = newChallenge;
 

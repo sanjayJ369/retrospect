@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const challengeEditSchema = z.object({
+  title: z.string().min(1, "Title is reqired"),
+  description: z.string().optional(),
+});
+
 export const challengeSchema = z
   .object({
     title: z.string().min(1, "Title is required"),
@@ -7,9 +12,7 @@ export const challengeSchema = z
     startDate: z.date(),
     endDate: z.date().nullable().optional(),
 
-    duration: z.preprocess((val) => {
-      return isNaN(val as number) ? undefined : val;
-    }, z.number().min(1, "Duration must be at least 1 day").optional()),
+    duration: z.number().min(1, "Duration must be at least 1 day").optional(),
 
     isLimitless: z.boolean(),
   })
@@ -32,3 +35,4 @@ export const challengeSchema = z
   });
 
 export type ChallengeFormData = z.infer<typeof challengeSchema>;
+export type ChallengeEditData = z.infer<typeof challengeEditSchema>;

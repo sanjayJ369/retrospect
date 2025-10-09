@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useState } from "react";
 import { AuthProvider } from "@/context/auth-provider";
-import { ThemeProvider } from "@/components/theme-provider";
 import { seedDailyData } from "@/lib/data-seeder";
 import { AppThemeProvider } from "./custom-theme-provider";
 
